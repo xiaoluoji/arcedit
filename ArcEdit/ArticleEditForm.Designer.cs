@@ -228,21 +228,21 @@
             // x96ToolStripMenuItem
             // 
             this.x96ToolStripMenuItem.Name = "x96ToolStripMenuItem";
-            this.x96ToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+            this.x96ToolStripMenuItem.Size = new System.Drawing.Size(168, 30);
             this.x96ToolStripMenuItem.Text = "96x96";
             this.x96ToolStripMenuItem.Click += new System.EventHandler(this.x96ToolStripMenuItem_Click);
             // 
             // x120ToolStripMenuItem
             // 
             this.x120ToolStripMenuItem.Name = "x120ToolStripMenuItem";
-            this.x120ToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+            this.x120ToolStripMenuItem.Size = new System.Drawing.Size(168, 30);
             this.x120ToolStripMenuItem.Text = "120x120";
             this.x120ToolStripMenuItem.Click += new System.EventHandler(this.x120ToolStripMenuItem_Click);
             // 
             // x200ToolStripMenuItem
             // 
             this.x200ToolStripMenuItem.Name = "x200ToolStripMenuItem";
-            this.x200ToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+            this.x200ToolStripMenuItem.Size = new System.Drawing.Size(168, 30);
             this.x200ToolStripMenuItem.Text = "200x200";
             this.x200ToolStripMenuItem.Click += new System.EventHandler(this.x200ToolStripMenuItem_Click);
             // 
