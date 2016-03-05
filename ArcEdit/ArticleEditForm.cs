@@ -321,16 +321,6 @@ namespace ArcEdit
 
         }
 
-        public string GetContent()
-        {
-            return _arcContent;
-        }
-        public void RequestContent(string str)
-        {
-            _arcContent = str;
-            tboxArticleDescription.Text = _arcContent;
-        }
-
         //图片下载完毕后，初始化缩略图规格选择控件和图片类型选择控件
         private void initLoadPictures()
         {
@@ -338,7 +328,7 @@ namespace ArcEdit
             cboxPicType.SelectedIndex = 0;
         }
 
-        private void loadListView(DirectoryInfo path)
+        private void loadImgListView(DirectoryInfo path)
         {
             imageListView.Items.Clear();
             imageListView.SuspendLayout();
@@ -373,7 +363,7 @@ namespace ArcEdit
                     if (Directory.Exists(currentImgPath))
                     {
                         DirectoryInfo dir = new DirectoryInfo(currentImgPath);
-                        loadListView(dir);
+                        loadImgListView(dir);
                     }
                 }
             }
@@ -386,7 +376,7 @@ namespace ArcEdit
                     if (Directory.Exists(currentThumbPath))
                     {
                         DirectoryInfo dir = new DirectoryInfo(currentThumbPath);
-                        loadListView(dir);
+                        loadImgListView(dir);
                     }
                 }
             }
@@ -395,6 +385,32 @@ namespace ArcEdit
 
 
         #endregion 文章内容处理完成
+
+        #region 编辑器相关方法
+
+
+
+        //将_arcContent变量中的内容传递给编辑器中, 编辑器加载的时候执行
+        public string GetContent()
+        {
+            return _arcContent;
+        }
+
+        //当编辑器内容修改时将编辑器中修改后的内容更新到_arcContent变量
+        public void RequestContent(string str)
+        {
+            _arcContent = str;
+            tboxArticleDescription.Text = _arcContent;
+        }
+
+        //将当前_arcContent变量中的内容更新到编辑器中的内容
+        public void SetEditorContent()
+        {
+            webBrowserArcContent.Document.InvokeScript("setContent", new object[] { _arcContent });
+        }
+
+
+        #endregion  编辑器相关方法结束
 
 
         #region 文章图片处理区域
