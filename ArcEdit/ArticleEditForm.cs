@@ -123,6 +123,17 @@ namespace ArcEdit
             cboxPicType.Enabled = false;
             webBrowserArcContent.Url= new System.Uri(_RootPath + @"kindeditor\e.html", System.UriKind.Absolute);
             webBrowserArcContent.ObjectForScripting = this;
+            string cacheDir = _RootPath + "cache";
+            if (!Directory.Exists(cacheDir))
+            {
+                Directory.CreateDirectory(cacheDir);
+            }
+            imageListView.PersistentCacheDirectory = cacheDir;
+            imageListView.Columns.Add(ColumnType.Name);
+            imageListView.Columns.Add(ColumnType.Dimensions);
+            imageListView.Columns.Add(ColumnType.FileSize);
+            imageListView.Columns.Add(ColumnType.FolderName);
+
         }
 
         #region 控件事件触发方法

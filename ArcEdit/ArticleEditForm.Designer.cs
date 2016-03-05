@@ -1,4 +1,6 @@
-﻿namespace ArcEdit
+﻿using Manina.Windows.Forms;
+
+namespace ArcEdit
 {
     partial class ArticleEditForm
     {
@@ -283,17 +285,8 @@
             // imageListView
             // 
             this.imageListView.AllowDuplicateFileNames = true;
+            this.imageListView.SetRenderer(new ImageListViewRenderers.DefaultRenderer());
             this.imageListView.ColumnHeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.imageListView.Columns.AddRange(new Manina.Windows.Forms.ImageListView.ImageListViewColumnHeader[] {
-            new Manina.Windows.Forms.ImageListView.ImageListViewColumnHeader(Manina.Windows.Forms.ColumnType.Name, "", 100, 0, true),
-            new Manina.Windows.Forms.ImageListView.ImageListViewColumnHeader(Manina.Windows.Forms.ColumnType.FileType, "", 100, 1, true),
-            new Manina.Windows.Forms.ImageListView.ImageListViewColumnHeader(Manina.Windows.Forms.ColumnType.FileSize, "", 100, 2, true),
-            new Manina.Windows.Forms.ImageListView.ImageListViewColumnHeader(Manina.Windows.Forms.ColumnType.DateModified, "", 100, 3, true),
-            new Manina.Windows.Forms.ImageListView.ImageListViewColumnHeader(Manina.Windows.Forms.ColumnType.DateTaken, "", 100, 4, true),
-            new Manina.Windows.Forms.ImageListView.ImageListViewColumnHeader(Manina.Windows.Forms.ColumnType.ExposureTime, "", 100, 5, true),
-            new Manina.Windows.Forms.ImageListView.ImageListViewColumnHeader(Manina.Windows.Forms.ColumnType.FNumber, "", 100, 6, true),
-            new Manina.Windows.Forms.ImageListView.ImageListViewColumnHeader(Manina.Windows.Forms.ColumnType.ISOSpeed, "", 100, 7, true),
-            new Manina.Windows.Forms.ImageListView.ImageListViewColumnHeader(Manina.Windows.Forms.ColumnType.Rating, "", 100, 8, true)});
             this.imageListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imageListView.GroupHeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
             this.imageListView.Location = new System.Drawing.Point(3, 24);
