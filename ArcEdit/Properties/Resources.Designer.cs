@@ -63,6 +63,16 @@ namespace ArcEdit.Properties {
         /// <summary>
         ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
+        internal static byte[] ImageListView {
+            get {
+                object obj = ResourceManager.GetObject("ImageListView", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
         internal static byte[] MurmurHash {
             get {
                 object obj = ResourceManager.GetObject("MurmurHash", resourceCulture);

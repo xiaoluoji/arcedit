@@ -22,6 +22,9 @@ namespace ArcEdit
         private string _coConnString;                                                                  //建立采集数据库连接的配置变量
         private string _pubConnString;                                                               //建立发布数据库连接的配置变量
         private string _pubTablePrename;                                                          //CMS数据库中的表前缀
+        private int _selectCoTypeID = 0;                                                               //当前选中采集分类ID
+        private int _displayCount = 0;                                                                //控制文章列表显示文章数量
+
 
         #region Main Form相关
         public MainForm()
@@ -43,6 +46,16 @@ namespace ArcEdit
             {
                 _sysConfig = new Configuration();
                 updateSysconfig();
+            }
+            _coConnString = GetCoConnString();
+            _pubConnString = GetPubConnString();
+            if (_coConnString != "" && _pubConnString != "")
+            {
+                loadCoTypeInfo();  //加载采集分类信息
+            }
+            else
+            {
+                MessageBox.Show("请将集数据库和发布数据库配置信息填写完整！");
             }
         }
 
@@ -148,6 +161,231 @@ namespace ArcEdit
         }
         #endregion   Main Form 相关方法结束
 
+        #region  控件事件
+
+        //当选中listViewCoTypeinfo中的分类项的时候，讲表单中采集分类ID和采集分类名称更新为选中的值
+
+        // tboxDisplayArcCount内容改变事件触发
+        private void tboxDisplayArcCount_TextChanged(object sender, EventArgs e)
+        {
+            string tempDisplayArcCount = tboxDisplayArcCount.Text;
+            if (tempDisplayArcCount=="")
+            {
+                _displayCount = 100;
+            }
+            else
+            {
+                if (int.TryParse(tempDisplayArcCount, out _displayCount))
+                {
+                    _displayCount = int.Parse(tempDisplayArcCount);
+                }
+            }
+
+            string searchArcTitle = tboxSearchArcTitle.Text;
+            if (_selectCoTypeID != 0)
+            {
+                displayArticles(_selectCoTypeID, searchArcTitle, _displayCount);
+            }
+        }
+
+        //采集分类选择项改变事件触发
+        private void listViewCoTypeinfo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (listViewCoTypeinfo.FocusedItem != null)
+                {
+                    ListViewItem selectedItem = listViewCoTypeinfo.SelectedItems[0];
+                    _selectCoTypeID = int.Parse(selectedItem.SubItems[0].Text);
+                    tboxSearchArcTitle.Text = "";
+                    int displayArcCount = 0;
+                    if (tboxDisplayArcCount.Text != "")
+                    {
+                        string tempDisplayArcCount = tboxDisplayArcCount.Text;
+                        if (int.TryParse(tempDisplayArcCount, out displayArcCount))
+                        {
+                            displayArcCount = int.Parse(tempDisplayArcCount);
+                        }
+                    }
+                    displayArticles(_selectCoTypeID, "", displayArcCount);
+                }
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void listViewArticles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (listViewArticles.FocusedItem != null)
+                {
+                    ListViewItem selectedItem = listViewArticles.SelectedItems[0];
+                    int aid = 0;
+                    string tempAidString = selectedItem.SubItems[0].Text;
+                    if (int.TryParse(tempAidString, out aid))
+                    {
+                        if (aid != 0)
+                        {
+                            ArticleEditForm editArticleForm = new ArticleEditForm(_coConnString, _pubConnString, aid, _pubTablePrename, this);
+                            editArticleForm.Text = "编辑发布文章-文章ID："+aid.ToString();
+                            editArticleForm.Show();
+                            this.Enabled = false;
+                            editArticleForm.FormClosed += ArticleEditModify_FormClosed;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+        }
+
+        private void ArticleEditModify_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.Enabled = true;
+            string searchArcTitle = tboxSearchArcTitle.Text;
+            displayArticles(_selectCoTypeID, searchArcTitle, _displayCount);
+        }
+
+        #endregion 控件事件结束
+
+        #region 选择采集分类和发布分类
+        //加载采集分类信息
+        private void loadCoTypeInfo(string searchCondition = "")
+        {
+            listViewCoTypeinfo.Items.Clear();
+            mySqlDB myDB = new mySqlDB(_coConnString);
+            string sResult = "";
+            int counts = 0;
+            string sql = "select tid,type_name,unused_nums from arc_type";
+            if (searchCondition != "")
+            {
+                sql = sql + " where type_name like '%" + searchCondition + "%'";
+            }
+            List<Dictionary<string, object>> listCoTypeinfo = myDB.GetRecords(sql, ref sResult, ref counts);
+            if (sResult == mySqlDB.SUCCESS && counts > 0)
+            {
+                listViewCoTypeinfo.BeginUpdate();
+                foreach (Dictionary<string, object> item in listCoTypeinfo)
+                {
+                    List<string> subItems = new List<string>();
+                    foreach (KeyValuePair<string, object> kvp in item)
+                    {
+                        subItems.Add(kvp.Value.ToString());
+                    }
+                    ListViewItem listItem = new ListViewItem(subItems.ToArray());
+                    listViewCoTypeinfo.Items.Add(listItem);
+                }
+                listViewCoTypeinfo.EndUpdate();
+                listViewCoTypeinfo.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+            }
+            else
+            {
+                if (counts == 0)
+                {
+                    MessageBox.Show(string.Format("未找到搜索的分类!"));
+
+                }
+                else
+                {
+                    MessageBox.Show(string.Format("加载采集分类数据出错!：{0}", sResult));
+                }
+            }
+        }
+
+        #endregion 选择分类结束
+
+
+        #region 获取文章内容
+        private void displayArticles(int typeID, string searchArcTitle = "", int displayCount = 0)
+        {
+            if (typeID!=0)
+            {
+                mySqlDB myDB = new mySqlDB(_coConnString);
+                string sResult = "";
+                int counts = 0;
+                string sql = "select aid,pic_count,title from arc_contents where usedby_pc='no' and  type_id='" + typeID.ToString() + "'";
+                if (searchArcTitle != "")
+                {
+                    sql = sql + " and title like '%" + searchArcTitle + "%'";
+                }
+                if (displayCount!=0)
+                {
+                    sql = sql + " limit " + displayCount.ToString();
+                }
+                else
+                {
+                    sql = sql + " limit 100";
+                }
+                List<Dictionary<string, object>> listArticles = myDB.GetRecords(sql, ref sResult, ref counts);
+                listViewArticles.Items.Clear();
+                if (sResult == mySqlDB.SUCCESS && counts > 0)
+                {
+                    listViewArticles.BeginUpdate();
+                    foreach (Dictionary<string, object> item in listArticles)
+                    {
+                        List<string> subItems = new List<string>();
+                        foreach (KeyValuePair<string, object> kvp in item)
+                        {
+                            subItems.Add(kvp.Value.ToString());
+                        }
+                        ListViewItem listItem = new ListViewItem(subItems.ToArray());
+                        listViewArticles.Items.Add(listItem);
+                    }
+                    listViewArticles.EndUpdate();
+                    listViewArticles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                }
+                else
+                {
+                    if (counts==0)
+                    {
+                        //MessageBox.Show("当前分类没有可发布文章！");
+                    }
+                    else
+                    {
+                        MessageBox.Show("获取文章出错！");
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("请选择文章分类！");
+            }
+
+        }
+
+        #endregion
+
+  
+
+        //点击 采集分类搜索按钮
+        private void btnSearchCoTypename_Click(object sender, EventArgs e)
+        {
+            loadCoTypeInfo(tboxSearchCoTypename.Text);
+
+        }
+
+
+        //点击 搜索文章标题按钮
+        private void btnSearchArcTitle_Click(object sender, EventArgs e)
+        {
+            if (_selectCoTypeID!=0 && tboxSearchArcTitle.Text!="")
+            {
+                int displayArcCount = 0;
+                string tempDisplayArcCount = tboxDisplayArcCount.Text;
+                if (int.TryParse(tempDisplayArcCount, out displayArcCount))
+                {
+                    displayArcCount = int.Parse(tempDisplayArcCount);
+                }
+                displayArticles(_selectCoTypeID, tboxSearchArcTitle.Text, displayArcCount);
+            }
+        }
 
     }
 }

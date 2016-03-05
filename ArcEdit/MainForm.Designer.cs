@@ -30,6 +30,24 @@
         {
             this.tabctrMainform = new System.Windows.Forms.TabControl();
             this.tabPageArcedit = new System.Windows.Forms.TabPage();
+            this.gboxArcList = new System.Windows.Forms.GroupBox();
+            this.tboxDisplayArcCount = new System.Windows.Forms.TextBox();
+            this.lblDisplayArcCount = new System.Windows.Forms.Label();
+            this.btnSearchArcTitle = new System.Windows.Forms.Button();
+            this.listViewArticles = new ArcDB.ListViewNF();
+            this.arc_aid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.arc_pic_counts = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.arc_title = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.tboxSearchArcTitle = new System.Windows.Forms.TextBox();
+            this.lblSearchArcTitle = new System.Windows.Forms.Label();
+            this.gboxArcCategory = new System.Windows.Forms.GroupBox();
+            this.btnSearchCoTypename = new System.Windows.Forms.Button();
+            this.tboxSearchCoTypename = new System.Windows.Forms.TextBox();
+            this.lblSearchCoTypename = new System.Windows.Forms.Label();
+            this.listViewCoTypeinfo = new ArcDB.ListViewNF();
+            this.co_typeid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.co_typename = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.co_type_unused_nums = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPageSysconfig = new System.Windows.Forms.TabPage();
             this.gbxPubDatabaseSet = new System.Windows.Forms.GroupBox();
             this.label13 = new System.Windows.Forms.Label();
@@ -61,6 +79,9 @@
             this.tboxCoPassword = new System.Windows.Forms.TextBox();
             this.cboxCoCharset = new System.Windows.Forms.ComboBox();
             this.tabctrMainform.SuspendLayout();
+            this.tabPageArcedit.SuspendLayout();
+            this.gboxArcList.SuspendLayout();
+            this.gboxArcCategory.SuspendLayout();
             this.tabPageSysconfig.SuspendLayout();
             this.gbxPubDatabaseSet.SuspendLayout();
             this.gbxCoDatabaseSet.SuspendLayout();
@@ -74,18 +95,181 @@
             this.tabctrMainform.Location = new System.Drawing.Point(0, 0);
             this.tabctrMainform.Name = "tabctrMainform";
             this.tabctrMainform.SelectedIndex = 0;
-            this.tabctrMainform.Size = new System.Drawing.Size(1262, 818);
+            this.tabctrMainform.Size = new System.Drawing.Size(1029, 968);
             this.tabctrMainform.TabIndex = 0;
             // 
             // tabPageArcedit
             // 
+            this.tabPageArcedit.Controls.Add(this.gboxArcList);
+            this.tabPageArcedit.Controls.Add(this.gboxArcCategory);
             this.tabPageArcedit.Location = new System.Drawing.Point(4, 28);
             this.tabPageArcedit.Name = "tabPageArcedit";
             this.tabPageArcedit.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageArcedit.Size = new System.Drawing.Size(1254, 786);
+            this.tabPageArcedit.Size = new System.Drawing.Size(1021, 936);
             this.tabPageArcedit.TabIndex = 0;
             this.tabPageArcedit.Text = "内容编辑发布";
             this.tabPageArcedit.UseVisualStyleBackColor = true;
+            // 
+            // gboxArcList
+            // 
+            this.gboxArcList.Controls.Add(this.tboxDisplayArcCount);
+            this.gboxArcList.Controls.Add(this.lblDisplayArcCount);
+            this.gboxArcList.Controls.Add(this.btnSearchArcTitle);
+            this.gboxArcList.Controls.Add(this.listViewArticles);
+            this.gboxArcList.Controls.Add(this.tboxSearchArcTitle);
+            this.gboxArcList.Controls.Add(this.lblSearchArcTitle);
+            this.gboxArcList.Location = new System.Drawing.Point(377, 6);
+            this.gboxArcList.Name = "gboxArcList";
+            this.gboxArcList.Size = new System.Drawing.Size(636, 911);
+            this.gboxArcList.TabIndex = 1;
+            this.gboxArcList.TabStop = false;
+            this.gboxArcList.Text = "选择文章";
+            // 
+            // tboxDisplayArcCount
+            // 
+            this.tboxDisplayArcCount.Location = new System.Drawing.Point(412, 19);
+            this.tboxDisplayArcCount.Name = "tboxDisplayArcCount";
+            this.tboxDisplayArcCount.Size = new System.Drawing.Size(218, 28);
+            this.tboxDisplayArcCount.TabIndex = 21;
+            this.tboxDisplayArcCount.TextChanged += new System.EventHandler(this.tboxDisplayArcCount_TextChanged);
+            // 
+            // lblDisplayArcCount
+            // 
+            this.lblDisplayArcCount.AutoSize = true;
+            this.lblDisplayArcCount.Location = new System.Drawing.Point(278, 24);
+            this.lblDisplayArcCount.Name = "lblDisplayArcCount";
+            this.lblDisplayArcCount.Size = new System.Drawing.Size(125, 18);
+            this.lblDisplayArcCount.TabIndex = 24;
+            this.lblDisplayArcCount.Text = "显示文章数量:";
+            // 
+            // btnSearchArcTitle
+            // 
+            this.btnSearchArcTitle.Location = new System.Drawing.Point(489, 58);
+            this.btnSearchArcTitle.Name = "btnSearchArcTitle";
+            this.btnSearchArcTitle.Size = new System.Drawing.Size(141, 31);
+            this.btnSearchArcTitle.TabIndex = 23;
+            this.btnSearchArcTitle.Text = "搜索";
+            this.btnSearchArcTitle.UseVisualStyleBackColor = true;
+            this.btnSearchArcTitle.Click += new System.EventHandler(this.btnSearchArcTitle_Click);
+            // 
+            // listViewArticles
+            // 
+            this.listViewArticles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.arc_aid,
+            this.arc_pic_counts,
+            this.arc_title});
+            this.listViewArticles.FullRowSelect = true;
+            this.listViewArticles.GridLines = true;
+            this.listViewArticles.Location = new System.Drawing.Point(6, 109);
+            this.listViewArticles.MultiSelect = false;
+            this.listViewArticles.Name = "listViewArticles";
+            this.listViewArticles.Size = new System.Drawing.Size(624, 796);
+            this.listViewArticles.TabIndex = 21;
+            this.listViewArticles.UseCompatibleStateImageBehavior = false;
+            this.listViewArticles.View = System.Windows.Forms.View.Details;
+            this.listViewArticles.SelectedIndexChanged += new System.EventHandler(this.listViewArticles_SelectedIndexChanged);
+            // 
+            // arc_aid
+            // 
+            this.arc_aid.Text = "文章ID";
+            this.arc_aid.Width = 76;
+            // 
+            // arc_pic_counts
+            // 
+            this.arc_pic_counts.Text = "图片数";
+            this.arc_pic_counts.Width = 80;
+            // 
+            // arc_title
+            // 
+            this.arc_title.Text = "文章标题";
+            this.arc_title.Width = 450;
+            // 
+            // tboxSearchArcTitle
+            // 
+            this.tboxSearchArcTitle.Location = new System.Drawing.Point(6, 61);
+            this.tboxSearchArcTitle.Name = "tboxSearchArcTitle";
+            this.tboxSearchArcTitle.Size = new System.Drawing.Size(477, 28);
+            this.tboxSearchArcTitle.TabIndex = 22;
+            // 
+            // lblSearchArcTitle
+            // 
+            this.lblSearchArcTitle.AutoSize = true;
+            this.lblSearchArcTitle.Location = new System.Drawing.Point(6, 32);
+            this.lblSearchArcTitle.Name = "lblSearchArcTitle";
+            this.lblSearchArcTitle.Size = new System.Drawing.Size(125, 18);
+            this.lblSearchArcTitle.TabIndex = 21;
+            this.lblSearchArcTitle.Text = "搜索文章标题:";
+            // 
+            // gboxArcCategory
+            // 
+            this.gboxArcCategory.Controls.Add(this.btnSearchCoTypename);
+            this.gboxArcCategory.Controls.Add(this.tboxSearchCoTypename);
+            this.gboxArcCategory.Controls.Add(this.lblSearchCoTypename);
+            this.gboxArcCategory.Controls.Add(this.listViewCoTypeinfo);
+            this.gboxArcCategory.Location = new System.Drawing.Point(8, 6);
+            this.gboxArcCategory.Name = "gboxArcCategory";
+            this.gboxArcCategory.Size = new System.Drawing.Size(363, 911);
+            this.gboxArcCategory.TabIndex = 0;
+            this.gboxArcCategory.TabStop = false;
+            this.gboxArcCategory.Text = "选择采集分类";
+            // 
+            // btnSearchCoTypename
+            // 
+            this.btnSearchCoTypename.Location = new System.Drawing.Point(190, 58);
+            this.btnSearchCoTypename.Name = "btnSearchCoTypename";
+            this.btnSearchCoTypename.Size = new System.Drawing.Size(141, 31);
+            this.btnSearchCoTypename.TabIndex = 20;
+            this.btnSearchCoTypename.Text = "搜索";
+            this.btnSearchCoTypename.UseVisualStyleBackColor = true;
+            this.btnSearchCoTypename.Click += new System.EventHandler(this.btnSearchCoTypename_Click);
+            // 
+            // tboxSearchCoTypename
+            // 
+            this.tboxSearchCoTypename.Location = new System.Drawing.Point(11, 61);
+            this.tboxSearchCoTypename.Name = "tboxSearchCoTypename";
+            this.tboxSearchCoTypename.Size = new System.Drawing.Size(161, 28);
+            this.tboxSearchCoTypename.TabIndex = 19;
+            // 
+            // lblSearchCoTypename
+            // 
+            this.lblSearchCoTypename.AutoSize = true;
+            this.lblSearchCoTypename.Location = new System.Drawing.Point(8, 32);
+            this.lblSearchCoTypename.Name = "lblSearchCoTypename";
+            this.lblSearchCoTypename.Size = new System.Drawing.Size(89, 18);
+            this.lblSearchCoTypename.TabIndex = 18;
+            this.lblSearchCoTypename.Text = "搜索分类:";
+            // 
+            // listViewCoTypeinfo
+            // 
+            this.listViewCoTypeinfo.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.co_typeid,
+            this.co_typename,
+            this.co_type_unused_nums});
+            this.listViewCoTypeinfo.FullRowSelect = true;
+            this.listViewCoTypeinfo.GridLines = true;
+            this.listViewCoTypeinfo.Location = new System.Drawing.Point(6, 109);
+            this.listViewCoTypeinfo.MultiSelect = false;
+            this.listViewCoTypeinfo.Name = "listViewCoTypeinfo";
+            this.listViewCoTypeinfo.Size = new System.Drawing.Size(351, 796);
+            this.listViewCoTypeinfo.TabIndex = 17;
+            this.listViewCoTypeinfo.UseCompatibleStateImageBehavior = false;
+            this.listViewCoTypeinfo.View = System.Windows.Forms.View.Details;
+            this.listViewCoTypeinfo.SelectedIndexChanged += new System.EventHandler(this.listViewCoTypeinfo_SelectedIndexChanged);
+            // 
+            // co_typeid
+            // 
+            this.co_typeid.Text = "分类ID";
+            this.co_typeid.Width = 80;
+            // 
+            // co_typename
+            // 
+            this.co_typename.Text = "分类名称";
+            this.co_typename.Width = 140;
+            // 
+            // co_type_unused_nums
+            // 
+            this.co_type_unused_nums.Text = "可用文章数";
+            this.co_type_unused_nums.Width = 120;
             // 
             // tabPageSysconfig
             // 
@@ -95,7 +279,7 @@
             this.tabPageSysconfig.Location = new System.Drawing.Point(4, 28);
             this.tabPageSysconfig.Name = "tabPageSysconfig";
             this.tabPageSysconfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSysconfig.Size = new System.Drawing.Size(1254, 786);
+            this.tabPageSysconfig.Size = new System.Drawing.Size(1021, 936);
             this.tabPageSysconfig.TabIndex = 1;
             this.tabPageSysconfig.Text = "系统配置";
             this.tabPageSysconfig.UseVisualStyleBackColor = true;
@@ -243,7 +427,7 @@
             // 
             // btnSaveConfig
             // 
-            this.btnSaveConfig.Location = new System.Drawing.Point(1085, 703);
+            this.btnSaveConfig.Location = new System.Drawing.Point(879, 456);
             this.btnSaveConfig.Name = "btnSaveConfig";
             this.btnSaveConfig.Size = new System.Drawing.Size(129, 36);
             this.btnSaveConfig.TabIndex = 39;
@@ -378,7 +562,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1262, 818);
+            this.ClientSize = new System.Drawing.Size(1029, 968);
             this.Controls.Add(this.tabctrMainform);
             this.Name = "MainForm";
             this.Text = "文章编辑";
@@ -386,6 +570,11 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_Closed);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabctrMainform.ResumeLayout(false);
+            this.tabPageArcedit.ResumeLayout(false);
+            this.gboxArcList.ResumeLayout(false);
+            this.gboxArcList.PerformLayout();
+            this.gboxArcCategory.ResumeLayout(false);
+            this.gboxArcCategory.PerformLayout();
             this.tabPageSysconfig.ResumeLayout(false);
             this.gbxPubDatabaseSet.ResumeLayout(false);
             this.gbxPubDatabaseSet.PerformLayout();
@@ -429,6 +618,24 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tboxCoPassword;
         private System.Windows.Forms.ComboBox cboxCoCharset;
+        private System.Windows.Forms.GroupBox gboxArcCategory;
+        private System.Windows.Forms.GroupBox gboxArcList;
+        private System.Windows.Forms.Button btnSearchCoTypename;
+        private System.Windows.Forms.TextBox tboxSearchCoTypename;
+        private System.Windows.Forms.Label lblSearchCoTypename;
+        private ArcDB.ListViewNF listViewCoTypeinfo;
+        private System.Windows.Forms.ColumnHeader co_typeid;
+        private System.Windows.Forms.ColumnHeader co_typename;
+        private System.Windows.Forms.ColumnHeader co_type_unused_nums;
+        private ArcDB.ListViewNF listViewArticles;
+        private System.Windows.Forms.ColumnHeader arc_aid;
+        private System.Windows.Forms.ColumnHeader arc_title;
+        private System.Windows.Forms.Button btnSearchArcTitle;
+        private System.Windows.Forms.TextBox tboxSearchArcTitle;
+        private System.Windows.Forms.Label lblSearchArcTitle;
+        private System.Windows.Forms.TextBox tboxDisplayArcCount;
+        private System.Windows.Forms.Label lblDisplayArcCount;
+        private System.Windows.Forms.ColumnHeader arc_pic_counts;
     }
 }
 
