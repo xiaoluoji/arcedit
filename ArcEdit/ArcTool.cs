@@ -6,12 +6,60 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Text.RegularExpressions;
 
-
-namespace ArcDB
+namespace ArcEdit
 {
     class ArcTool
     {
+
+        public static string ClearDiv(string strHtml)
+        {
+            Regex regDivClear = new Regex("</?div>");
+            if (regDivClear.IsMatch(strHtml))
+            {
+                strHtml = regDivClear.Replace(strHtml, "");
+            }
+            return strHtml;
+        }
+
+        public static string HtmlToTxt(string strHtml)
+        {
+            string[] aryReg ={
+            @"<script[^>]*?>.*?</script>",
+            //@"<(\/\s*)?!?((\w+:)?\w+)(\w+(\s*=?\s*(([""'])(\\[""'tbnr]|[^\7])*?\7|\w+)|.{0})|\s)*?(\/\s*)?>",
+            @"([\r\n])[\s]+",
+            @"&(quot|#34);",
+            @"&(amp|#38);",
+            @"&(lt|#60);",
+            @"&(gt|#62);",
+            @"&(nbsp|#160);",
+            @"&(iexcl|#161);",
+            @"&(cent|#162);",
+            @"&(pound|#163);",
+            @"&(copy|#169);",
+            @"&#(\d+);",
+            @"-->",
+            @"<!--.*\n"
+            };
+
+            string newReg = aryReg[0];
+            string strOutput = strHtml;
+            for (int i = 0; i < aryReg.Length; i++)
+            {
+                Regex regex = new Regex(aryReg[i], RegexOptions.IgnoreCase);
+                strOutput = regex.Replace(strOutput, string.Empty);
+            }
+
+            strOutput.Replace("<", "");
+            strOutput.Replace(">", "");
+            strOutput.Replace("\r\n", "");
+
+
+            return strOutput;
+        }
+
+
         //根据文章内容获取文章概要
         public static string GetDescription(string article,int descriptionLength)
         {

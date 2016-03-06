@@ -17,6 +17,9 @@ using System.Diagnostics;
 using System.Runtime.Remoting.Messaging;
 using Manina.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Security.Cryptography;
+
 
 namespace ArcEdit
 {
@@ -84,7 +87,8 @@ namespace ArcEdit
         private string _arcSourceSite;                                                                                                          //文章采集来源
         private string _arcKeywords;                                                                                                          //文章关键词
         private string _arcDescription;                                                                                                         //文章概要
-        private string _arcContent;                                                                                                              //文章内容
+        private string _arcContent;                                                                                                              //从数据库中获取文章内容
+        private string _arcTempContent;                                                                                                     //编辑中的文件内容
         private string _arcUsedbyPc;                                                                                                           //文章是否已发布
         private int _arcCmsAid=0;                                                                                                               //文章发布后对于在CMS中的文章ID
         private int _arcPubTypeid=0;                                                                                                          //当前选中发布分类ID
@@ -102,6 +106,7 @@ namespace ArcEdit
         private int _imgTotalCount = 0;                                                                 //文章中图片总数
         private int _thumbRequestFinished = 0;                                                    //异步下载缩略图片完成下载请求数量
         private int _imgRequestFinished = 0;                                                         //异步下载文章图片完成下载请求数量
+        private bool _arcTempContentDivCleared = false;                                    //去除编辑器内容中的DIV，文章采集入库的时候，使用div把原文装的分页内容封装起来
         System.Threading.Timer _timerDownload;                                                //监控图片下载
         private Dictionary<string,Dictionary<string, string>> _thumbDownloadResult;           //保存缩略图下载结果
         private Dictionary<string, Dictionary<string, string>> _imgDownloadResult;               //保存文章图片下载结果
@@ -121,8 +126,6 @@ namespace ArcEdit
             Location = new Point(ParentForm.Location.X + 350, ParentForm.Location.Y + 200);
             cboxThumbSize.Enabled = false;
             cboxPicType.Enabled = false;
-            webBrowserArcContent.Url= new System.Uri(_RootPath + @"kindeditor\e.html", System.UriKind.Absolute);
-            webBrowserArcContent.ObjectForScripting = this;
             string cacheDir = _RootPath + "cache";
             if (!Directory.Exists(cacheDir))
             {
@@ -142,6 +145,8 @@ namespace ArcEdit
         {
             loadPubTypeInfo(); //加载CMS分类信息
             loadArticleContents();
+            webBrowserArcContent.Url = new System.Uri(_RootPath + @"kindeditor\e.html", System.UriKind.Absolute);
+            webBrowserArcContent.ObjectForScripting = this;
             downloadAllpic();
         }
 
@@ -168,7 +173,6 @@ namespace ArcEdit
                 //MessageBox.Show(ex.Message);
             }
         }
-
 
 
         private void thumbnailsToolStripButton_Click(object sender, EventArgs e)
@@ -252,10 +256,77 @@ namespace ArcEdit
             displayArcPics("缩略图");
         }
 
+        private void radioBtnOriginPage_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioBtnOriginPage.Checked)
+            {
+                if (hasPageinfo())
+                {
+                    if (MessageBox.Show("当前分页信息将清除，确定清除？", "警告！", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        setOriginPage();
+                    }
+                }
+                else
+                {
+                    setOriginPage();
+                }
+            }
+        }
+        private void radioBtnHandpage_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioBtnHandpage.Checked)
+            {
+                setHandPage();
+            }
+        }
+
+        //点击 发布分类搜索按钮
+        private void btnSearchPubTypename_Click(object sender, EventArgs e)
+        {
+            loadPubTypeInfo(tboxSearchPubTypename.Text);
+        }
+
+        private void btnResetContent_Click(object sender, EventArgs e)
+        {
+
+            if (_arcTempContent != _arcContent)
+            {
+                if (MessageBox.Show("当前内容已经编辑，重置后编辑内容将丢失，确定重置？", "警告！", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    _arcTempContent = _arcContent;
+                    SetEditorContent();
+                    radioBtnOriginPage.Enabled = true;
+                    radioBtnOriginPage.Checked = false;
+                    radioBtnHandpage.Checked = false;
+                    radioBtnAutopage.Checked = false;
+                }
+            }
+        }
+
+        private void btnClearPageSeparator_Click(object sender, EventArgs e)
+        {
+            clearPageSeparator();
+        }
+
         #endregion 控件事件触发方法结束
 
 
         #region 文章内容处理相关方法
+
+
+        private bool hasPageinfo()
+        {
+            Regex regPageinfo = new Regex("<hr.*?class=[^>]*>");
+            if (regPageinfo.IsMatch(_arcTempContent))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         //加载发布分类信息
         private void loadPubTypeInfo(string searchCondition = "")
@@ -317,11 +388,13 @@ namespace ArcEdit
                 _arcKeywords = articleContentsInfo[0]["keywords"].ToString();
                 _arcDescription = articleContentsInfo[0]["description"].ToString();
                 _arcContent = articleContentsInfo[0]["content"].ToString();
+                _arcTempContent = _arcContent;
                 _arcTitle = articleContentsInfo[0]["title"].ToString();
                 tboxArticleTitle.Text = _arcTitle;
                 tboxArticleLitpicURL.Text = _arcLitpic;
                 tboxArticleKeywords.Text = _arcKeywords;
                 tboxArticleDescription.Text = _arcDescription;
+                tboxArticleDescription.Text = _arcTempContent;
                 //tboxArticleContent.Text = _arcContent;
                 tboxAticleTypename.Text = _arcCoTypeid.ToString();
             }
@@ -397,29 +470,97 @@ namespace ArcEdit
 
         #endregion 文章内容处理完成
 
+
         #region 编辑器相关方法
 
-
-
-        //将_arcContent变量中的内容传递给编辑器中, 编辑器加载的时候执行
-        public string GetContent()
+        //清除所有分页符
+        private void clearPageSeparator()
         {
-            return _arcContent;
+            Regex regPageSeparator = new Regex("<hr.*?class=[^>]*>");
+            _arcTempContent = regPageSeparator.Replace(_arcTempContent, "");
+            SetEditorContent();
         }
 
-        //当编辑器内容修改时将编辑器中修改后的内容更新到_arcContent变量
-        public void RequestContent(string str)
+        //设置使用原始文章分页方式
+        private void setOriginPage()
         {
-            _arcContent = str;
-            tboxArticleDescription.Text = _arcContent;
+            radioBtnOriginPage.Checked = false;
+            radioBtnOriginPage.Enabled = false;
+            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+            try
+            {
+                doc.LoadHtml(_arcTempContent);
+                string pageSeparator = "<hr class=\"ke - pagebreak\" style=\"page -break-after:always; \" />";
+                string newContent = "";
+                HtmlAgilityPack.HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//div");
+                for (int i = 0; i < nodes.Count-1; i++)
+                {
+                    HtmlAgilityPack.HtmlNode node = nodes[i];
+                    string nodeContent = node.InnerHtml;
+                    newContent += nodeContent;
+                    newContent += pageSeparator;
+                }
+                HtmlAgilityPack.HtmlNode lastNode = nodes[nodes.Count - 1];
+                newContent += lastNode.InnerHtml;
+                //将编辑器中的内容更新为添加原始分页信息后的内容
+                _arcTempContent = newContent;  
+                SetEditorContent();
+                //将判断编辑器内容中的div是否已经清除设置为是，同时将手动分页按钮设置为选中状态
+                _arcTempContentDivCleared = true;  
+                radioBtnHandpage.Checked = true;
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+        //设置使用手动分页方式
+        private void setHandPage()
+        {
+            if (radioBtnOriginPage.Enabled)
+            {
+                radioBtnOriginPage.Enabled = false;
+                radioBtnOriginPage.Checked = false;
+            }
+            if (!_arcTempContentDivCleared)
+            {
+                _arcTempContent = ArcTool.ClearDiv(_arcTempContent);
+                _arcTempContentDivCleared = true;
+                SetEditorContent();
+            }
+        }
+
+        //将_arcTempContent变量中的内容传递给编辑器中, 编辑器加载的时候执行
+        public string EditorGetContent()
+        {
+            return _arcTempContent;
+        }
+
+        //当编辑器内容修改时将编辑器中修改后的内容更新到_arcTempContent变量
+        public void ArcUpdateTempContent(string str)
+        {
+            _arcTempContent = str;
+            tboxArticleDescription.Text = _arcTempContent;
+            //如果内容有修改，则禁止使用原始分页方法，需要使用原始分页必须将内容重置为初始状态
+            if (_arcTempContent !=_arcContent && radioBtnOriginPage.Enabled)
+            {
+                radioBtnHandpage.Checked = true;
+                setHandPage();
+            }
+        }
+        //将编辑器中的初始内容传给_arcContent变量中
+        public void ArcUpdateContent(string str)
+        {
+            _arcContent= str;
         }
 
         //将当前_arcContent变量中的内容更新到编辑器中的内容
         public void SetEditorContent()
         {
-            webBrowserArcContent.Document.InvokeScript("setContent", new object[] { _arcContent });
+            webBrowserArcContent.Document.InvokeScript("setContent", new object[] { _arcTempContent });
         }
 
+        
 
         #endregion  编辑器相关方法结束
 
@@ -830,12 +971,6 @@ namespace ArcEdit
         }
 
         #endregion
-
-        //点击 发布分类搜索按钮
-        private void btnSearchPubTypename_Click(object sender, EventArgs e)
-        {
-            loadPubTypeInfo(tboxSearchPubTypename.Text);
-        }
 
 
     }
