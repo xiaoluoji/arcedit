@@ -512,8 +512,6 @@ namespace ArcEdit
                 tboxArticleLitpicURL.Text = _arcLitpic;
                 tboxArticleKeywords.Text = _arcKeywords;
                 tboxArticleDescription.Text = _arcDescription;
-                tboxArticleDescription.Text = _arcTempContent;
-                //tboxArticleContent.Text = _arcContent;
                 tboxAticleTypename.Text = _arcCoTypeid.ToString();
                 toolStripStatusLblImgCount.Text = "文章图片数：" + _arcPiCount.ToString();
                 toolStripStatusLblWordsCount.Text = "文章字数：" + _arcWordsCount.ToString();
@@ -551,7 +549,6 @@ namespace ArcEdit
         private void autopageByImages(int autopageParam)
         {
             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-            tboxArticleDescription.Text = "";
             try
             {
                 doc.LoadHtml(_arcTempContent);
@@ -661,7 +658,6 @@ namespace ArcEdit
         public void ArcUpdateTempContent(string str)
         {
             _arcTempContent = str;
-            tboxArticleDescription.Text = _arcTempContent;
             //如果内容有修改，则禁止使用原始分页方法，需要使用原始分页必须将内容重置为初始状态
             if (_arcTempContent !=_arcContent && radioBtnOriginPage.Enabled)
             {
