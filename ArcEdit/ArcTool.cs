@@ -20,6 +20,11 @@ namespace ArcEdit
             {
                 strHtml = regDivClear.Replace(strHtml, "");
             }
+            Regex regCenterClear = new Regex("</?center>");
+            if (regCenterClear.IsMatch(strHtml))
+            {
+                strHtml = regCenterClear.Replace(strHtml, "");
+            }
             return strHtml;
         }
 
@@ -194,6 +199,7 @@ namespace ArcEdit
             }
         }
         #endregion
+
 
         //根据图片生成图片略图，缩放后空白地方用白色背景填充
         public static bool GenThumbFillWithWhite(Image imageFrom, string pathImageTo, int width, int height)

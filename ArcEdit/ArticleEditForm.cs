@@ -93,11 +93,12 @@ namespace ArcEdit
         private int _arcCmsAid=0;                                                                                                               //文章发布后对于在CMS中的文章ID
         private int _arcPubTypeid=0;                                                                                                          //当前选中发布分类ID
         private string _arcPubTypename;                                                                                                    //当前选中发布分类名称
+        private int _arcWordsCount = 0;                                                                                                     //文章内容文字数量
         private string _pubFilterKeywords;
         private List<Dictionary<string,string>> _arcPicUrls;                                                                       //保存文章所有图片URL信息，每个元素的key为图片在arc_pics表中的ID 
         private Dictionary<string,Dictionary<string,Dictionary<string,string>>> _dicArcThumbs;           //保存文章所有缩略图信息      
         private Dictionary<string, Dictionary<string, string>> _dicArcPics;                                               //保存文章中所有的图片信息
-        private List<string> _cfgThumbSizeList;                                                        //需要生成多种规格缩略图所指定的宽度，此数据从数据库sys_config表cfg_thumb_size记录中获取，比如158*140表示宽158，高140，指定宽高则按Cut模式生成缩略图，只指定宽的话则按等比宽度生成。多种规格使用“|”分隔
+        private List<string> _cfgThumbSizeList;                                                     //需要生成多种规格缩略图所指定的宽度，此数据从数据库sys_config表cfg_thumb_size记录中获取，比如158*140表示宽158，高140，指定宽高则按Cut模式生成缩略图，只指定宽的话则按等比宽度生成。多种规格使用“|”分隔
         private int _cfgThumbWidthDefault = 0;                                                    //生成缩略图时设置的缩略图宽度，当从数据库中获取不到缩略图尺寸设置时使用
         private int _cfgThumbHeightDefault = 0;                                                   //生成缩略图时设置的缩略图高度，当从数据库中获取不到缩略图尺寸设置时使用
         private int _thumbDownloadedCount = 0;                                                 //记录成功下载的缩略图数量
@@ -110,7 +111,6 @@ namespace ArcEdit
         System.Threading.Timer _timerDownload;                                                //监控图片下载
         private Dictionary<string,Dictionary<string, string>> _thumbDownloadResult;           //保存缩略图下载结果
         private Dictionary<string, Dictionary<string, string>> _imgDownloadResult;               //保存文章图片下载结果
-
         private CancellationTokenSource cancelTokenSource;
 
         public ArticleEditForm(string coConnString, string pubConnString, int aid,string pubTablePrename, System.Windows.Forms.Form ParentForm)
@@ -211,6 +211,7 @@ namespace ArcEdit
             imageListView.ThumbnailSize = new Size(200, 200);
         }
 
+        //图片预览控件选择项改变事件
         private void imageListView_SelectionChanged(object sender, EventArgs e)
         {
             ImageListViewItem sel = null;
@@ -235,7 +236,7 @@ namespace ArcEdit
                 }
             }
         }
-
+        //图片类型选项值改变事件
         private void cboxPicType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboxPicType.Text=="缩略图")
@@ -250,7 +251,7 @@ namespace ArcEdit
             }
             
         }
-
+        //缩略图尺寸选项值改变事件
         private void cboxThumbSize_SelectedIndexChanged(object sender, EventArgs e)
         {
             displayArcPics("缩略图");
@@ -281,12 +282,102 @@ namespace ArcEdit
             }
         }
 
+        private void radioBtnAutopage_CheckedChanged(object sender, EventArgs e)
+        {
+            string autopageType = "";
+            int autopageParam = 0;
+            
+            if (radioBtnAutopagebyImages.Checked)
+            {
+                autopageType = "image";
+            }
+            if (radioBtnAutopagebyWords.Checked)
+            {
+                autopageType = "words";
+            }
+            if (radioBtnAutopage.Checked)
+            {
+                if (int.TryParse(tboxAutopageParams.Text, out autopageParam))
+                {
+                    if (autopageType != "")
+                    {
+                        //判断radioBtnOriginPage 按钮是否可用，如果可用则禁用
+                        if (radioBtnOriginPage.Enabled)
+                        {
+                            radioBtnOriginPage.Enabled = false;
+                            radioBtnOriginPage.Checked = false;
+                        }
+                        //判断当前编辑器中的内容是否清楚div格式，如果没有则先清除div标签
+                        if (!_arcTempContentDivCleared)
+                        {
+                            _arcTempContent = ArcTool.ClearDiv(_arcTempContent);
+                            _arcTempContentDivCleared = true;
+                        }
+                        if (hasPageinfo())
+                        {
+                            if (MessageBox.Show("现有分页信息将清除，确定清除？", "警告！", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            {
+                                clearPageSeparator();
+                                if (autopageType == "image")
+                                {
+                                    autopageByImages(autopageParam);
+                                }
+                                if (autopageType == "words")
+                                {
+                                    autopageByWords(autopageParam);
+                                }
+                                //分页符添加完毕后，将新的内容更新到编辑器当中
+                                SetEditorContent();
+                            }
+                            else
+                            {
+                                radioBtnHandpage.Checked = true;
+                            }
+                        }
+                        else
+                        {
+                            if (autopageType == "image")
+                            {
+                                autopageByImages(autopageParam);
+                            }
+                            if (autopageType == "words")
+                            {
+                                autopageByWords(autopageParam);
+                            }
+                            //分页符添加完毕后，将新的内容更新到编辑器当中
+                            SetEditorContent();
+                        }
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("请选择自动分页类型！");
+                        radioBtnAutopage.Checked = false;
+                        if (!radioBtnOriginPage.Enabled)
+                        {
+                            radioBtnHandpage.Checked = true;
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("请正确填写自动分页参数！");
+                    radioBtnAutopage.Checked = false;
+                    if (!radioBtnOriginPage.Enabled)
+                    {
+                        radioBtnHandpage.Checked = true;
+                    }
+                }
+            }
+        }
+
         //点击 发布分类搜索按钮
         private void btnSearchPubTypename_Click(object sender, EventArgs e)
         {
             loadPubTypeInfo(tboxSearchPubTypename.Text);
         }
 
+        //点击重置编辑器内容按钮
         private void btnResetContent_Click(object sender, EventArgs e)
         {
 
@@ -300,13 +391,52 @@ namespace ArcEdit
                     radioBtnOriginPage.Checked = false;
                     radioBtnHandpage.Checked = false;
                     radioBtnAutopage.Checked = false;
+                    checkBoxClearFormat.Checked = false;
+                    checkBoxOnlyImages.Checked = false;
+                    _arcTempContentDivCleared = false;
                 }
             }
         }
 
+        //清除内容编辑器中的分隔符
         private void btnClearPageSeparator_Click(object sender, EventArgs e)
         {
             clearPageSeparator();
+        }
+
+        //清除内容编辑器中的空格
+        private void checkBoxClearFormat_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxClearFormat.Checked)
+            {
+                _arcTempContent = ArcTool.HtmlToTxt(_arcTempContent);
+                SetEditorContent();
+            }
+        }
+
+        //只保留内容编辑中的图片,分页符页保留 
+        private void checkBoxOnlyImages_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxOnlyImages.Checked)
+            {
+                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                try
+                {
+                    doc.LoadHtml(_arcTempContent);
+                    string reserveContent = "";
+                    HtmlAgilityPack.HtmlNodeCollection reserveNodes = doc.DocumentNode.SelectNodes("//img|//hr");
+                    foreach (HtmlAgilityPack.HtmlNode node in reserveNodes)
+                    {
+                        reserveContent += node.OuterHtml;
+                    }
+                    _arcTempContent = reserveContent;
+                    SetEditorContent();
+                }
+                catch (Exception)
+                {
+
+                }
+            }
         }
 
         #endregion 控件事件触发方法结束
@@ -314,19 +444,6 @@ namespace ArcEdit
 
         #region 文章内容处理相关方法
 
-
-        private bool hasPageinfo()
-        {
-            Regex regPageinfo = new Regex("<hr.*?class=[^>]*>");
-            if (regPageinfo.IsMatch(_arcTempContent))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
 
         //加载发布分类信息
         private void loadPubTypeInfo(string searchCondition = "")
@@ -390,6 +507,7 @@ namespace ArcEdit
                 _arcContent = articleContentsInfo[0]["content"].ToString();
                 _arcTempContent = _arcContent;
                 _arcTitle = articleContentsInfo[0]["title"].ToString();
+                _arcWordsCount = _arcContent.Count();
                 tboxArticleTitle.Text = _arcTitle;
                 tboxArticleLitpicURL.Text = _arcLitpic;
                 tboxArticleKeywords.Text = _arcKeywords;
@@ -397,6 +515,17 @@ namespace ArcEdit
                 tboxArticleDescription.Text = _arcTempContent;
                 //tboxArticleContent.Text = _arcContent;
                 tboxAticleTypename.Text = _arcCoTypeid.ToString();
+                toolStripStatusLblImgCount.Text = "文章图片数：" + _arcPiCount.ToString();
+                toolStripStatusLblWordsCount.Text = "文章字数：" + _arcWordsCount.ToString();
+                if (_arcPiCount<=16)
+                {
+                    tboxAutopageParams.Text = "1";
+                }
+                else if (_arcPiCount >16)
+                {
+                    tboxAutopageParams.Text = "2";
+                }
+
             }
             else
             {
@@ -405,73 +534,63 @@ namespace ArcEdit
 
         }
 
-        //图片下载完毕后，初始化缩略图规格选择控件和图片类型选择控件
-        private void initLoadPictures()
-        {
-            cboxThumbSize.SelectedIndex = 0;
-            cboxPicType.SelectedIndex = 0;
-        }
-
-        private void loadImgListView(DirectoryInfo path)
-        {
-            imageListView.Items.Clear();
-            imageListView.SuspendLayout();
-            int i = 0;
-            foreach (FileInfo p in path.GetFiles("*.*"))
-            {
-                if (p.Name.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
-                    p.Name.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-                    p.Name.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase) ||
-                    p.Name.EndsWith(".ico", StringComparison.OrdinalIgnoreCase) ||
-                    p.Name.EndsWith(".cur", StringComparison.OrdinalIgnoreCase) ||
-                    p.Name.EndsWith(".emf", StringComparison.OrdinalIgnoreCase) ||
-                    p.Name.EndsWith(".wmf", StringComparison.OrdinalIgnoreCase) ||
-                    p.Name.EndsWith(".tif", StringComparison.OrdinalIgnoreCase) ||
-                    p.Name.EndsWith(".tiff", StringComparison.OrdinalIgnoreCase) ||
-                    p.Name.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
-                {
-                    imageListView.Items.Add(p.FullName);
-                }
-            }
-            imageListView.ResumeLayout();
-        }
-
-        //在选择图片的imageListView控件中显示选择的类型和规格的图片
-        private void displayArcPics(string picType)
-        {
-            if (picType=="文章图片")
-            {
-                if (_dicArcPics!=null)
-                {
-                    string currentImgPath=_imgRootPath+_aid.ToString()+@"\";
-                    if (Directory.Exists(currentImgPath))
-                    {
-                        DirectoryInfo dir = new DirectoryInfo(currentImgPath);
-                        loadImgListView(dir);
-                    }
-                }
-            }
-            else if (picType=="缩略图")
-            {
-                if (_dicArcThumbs!=null)
-                {
-                    string thumbSize = cboxThumbSize.Text;
-                    string currentThumbPath = _thumbRootPath + thumbSize + @"\" + _aid.ToString() + @"\";
-                    if (Directory.Exists(currentThumbPath))
-                    {
-                        DirectoryInfo dir = new DirectoryInfo(currentThumbPath);
-                        loadImgListView(dir);
-                    }
-                }
-            }
-
-        }
 
 
         #endregion 文章内容处理完成
 
 
         #region 编辑器相关方法
+       
+        //按字数自动分页
+        private void autopageByWords(int autopageParam)
+        {
+
+        }
+
+        //按图片数自动分页
+        private void autopageByImages(int autopageParam)
+        {
+            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+            tboxArticleDescription.Text = "";
+            try
+            {
+                doc.LoadHtml(_arcTempContent);
+                string pageSeparator = "<hr class=\"ke - pagebreak\" style=\"page -break-after:always; \" />";
+                string newContent = doc.DocumentNode.InnerHtml ;
+                HtmlAgilityPack.HtmlNodeCollection imageNodes = doc.DocumentNode.SelectNodes("//img");
+                for (int i = 0; i < imageNodes.Count - 1; i++)
+                {
+                    if (i%autopageParam==0)
+                    {
+                        HtmlAgilityPack.HtmlNode node = imageNodes[i];
+                        string nodeContent = node.OuterHtml;
+                        string replacement = nodeContent + pageSeparator;
+                        newContent = newContent.Replace(nodeContent, replacement);
+                    }
+                }
+                //将编辑器中的内容更新为添加原始分页信息后的内容
+                _arcTempContent = newContent;
+                SetEditorContent();
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        //检查编辑器内容中是否包含分页符
+        private bool hasPageinfo()
+        {
+            Regex regPageinfo = new Regex("<hr.*?class=[^>]*>");
+            if (regPageinfo.IsMatch(_arcTempContent))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         //清除所有分页符
         private void clearPageSeparator()
@@ -517,11 +636,13 @@ namespace ArcEdit
         //设置使用手动分页方式
         private void setHandPage()
         {
+            //判断radioBtnOriginPage 按钮是否可用，如果可用则禁用
             if (radioBtnOriginPage.Enabled)
             {
                 radioBtnOriginPage.Enabled = false;
                 radioBtnOriginPage.Checked = false;
             }
+            //判断当前编辑器中的内容是否清楚div格式，如果没有则先清除div标签
             if (!_arcTempContentDivCleared)
             {
                 _arcTempContent = ArcTool.ClearDiv(_arcTempContent);
@@ -560,12 +681,75 @@ namespace ArcEdit
             webBrowserArcContent.Document.InvokeScript("setContent", new object[] { _arcTempContent });
         }
 
-        
+
 
         #endregion  编辑器相关方法结束
 
 
         #region 文章图片处理区域
+
+        //图片下载完毕后，初始化缩略图规格选择控件和图片类型选择控件
+        private void initLoadPictures()
+        {
+            cboxThumbSize.SelectedIndex = 0;
+            cboxPicType.SelectedIndex = 0;
+        }
+
+        //加载制定目录下的图片到imageListView控件
+        private void loadImgListView(DirectoryInfo path)
+        {
+            imageListView.Items.Clear();
+            imageListView.SuspendLayout();
+            int i = 0;
+            foreach (FileInfo p in path.GetFiles("*.*"))
+            {
+                if (p.Name.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                    p.Name.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                    p.Name.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase) ||
+                    p.Name.EndsWith(".ico", StringComparison.OrdinalIgnoreCase) ||
+                    p.Name.EndsWith(".cur", StringComparison.OrdinalIgnoreCase) ||
+                    p.Name.EndsWith(".emf", StringComparison.OrdinalIgnoreCase) ||
+                    p.Name.EndsWith(".wmf", StringComparison.OrdinalIgnoreCase) ||
+                    p.Name.EndsWith(".tif", StringComparison.OrdinalIgnoreCase) ||
+                    p.Name.EndsWith(".tiff", StringComparison.OrdinalIgnoreCase) ||
+                    p.Name.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
+                {
+                    imageListView.Items.Add(p.FullName);
+                }
+            }
+            imageListView.ResumeLayout();
+        }
+
+        //在选择图片的imageListView控件中显示选择的类型和规格的图片
+        private void displayArcPics(string picType)
+        {
+            if (picType == "文章图片")
+            {
+                if (_dicArcPics != null)
+                {
+                    string currentImgPath = _imgRootPath + _aid.ToString() + @"\";
+                    if (Directory.Exists(currentImgPath))
+                    {
+                        DirectoryInfo dir = new DirectoryInfo(currentImgPath);
+                        loadImgListView(dir);
+                    }
+                }
+            }
+            else if (picType == "缩略图")
+            {
+                if (_dicArcThumbs != null)
+                {
+                    string thumbSize = cboxThumbSize.Text;
+                    string currentThumbPath = _thumbRootPath + thumbSize + @"\" + _aid.ToString() + @"\";
+                    if (Directory.Exists(currentThumbPath))
+                    {
+                        DirectoryInfo dir = new DirectoryInfo(currentThumbPath);
+                        loadImgListView(dir);
+                    }
+                }
+            }
+
+        }
 
         //获取缩略图规格参数
         private void getThumbSize()
@@ -753,22 +937,6 @@ namespace ArcEdit
 
         }
 
-        // 下载所有图片
-        private void downloadAllpic()
-        {
-            getArcpicUrls();  //获取文章中所有图片列表，此方法必须先于下载缩略图和下载文章图片运行
-             //下载初始化
-            initDownload();
-            //调用具体负责处理下载的方法
-            ThreadPool.QueueUserWorkItem(downloadLitpicAsync);
-            ThreadPool.QueueUserWorkItem(downloadArcpicAsync);
-            /*
-            downloadLitpicAsync();
-            downloadArcpicAsync();
-            */
-
-        }
-
         //异步下载文章缩略图
         private void downloadLitpicAsync(object state)
         {
@@ -835,6 +1003,22 @@ namespace ArcEdit
                     }
                 }
             }
+        }
+
+        // 下载所有图片
+        private void downloadAllpic()
+        {
+            getArcpicUrls();  //获取文章中所有图片列表，此方法必须先于下载缩略图和下载文章图片运行
+                              //下载初始化
+            initDownload();
+            //调用具体负责处理下载的方法
+            ThreadPool.QueueUserWorkItem(downloadLitpicAsync);
+            ThreadPool.QueueUserWorkItem(downloadArcpicAsync);
+            /*
+            downloadLitpicAsync();
+            downloadArcpicAsync();
+            */
+
         }
 
         #endregion 文章图片下载处理完成
@@ -969,6 +1153,9 @@ namespace ArcEdit
                 filestream = new FileStream(savepath, FileMode.OpenOrCreate);
             }
         }
+
+
+
 
         #endregion
 

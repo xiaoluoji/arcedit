@@ -80,20 +80,23 @@ namespace ArcEdit
             this.radioBtnAutopage = new System.Windows.Forms.RadioButton();
             this.radioBtnHandpage = new System.Windows.Forms.RadioButton();
             this.gboxAutopageType = new System.Windows.Forms.GroupBox();
-            this.radioBtnPagebyImages = new System.Windows.Forms.RadioButton();
-            this.radioBtnPagebyWords = new System.Windows.Forms.RadioButton();
+            this.radioBtnAutopagebyImages = new System.Windows.Forms.RadioButton();
+            this.radioBtnAutopagebyWords = new System.Windows.Forms.RadioButton();
             this.gboxParams = new System.Windows.Forms.GroupBox();
-            this.tboxPageParams = new System.Windows.Forms.TextBox();
+            this.tboxAutopageParams = new System.Windows.Forms.TextBox();
             this.lblPageParams = new System.Windows.Forms.Label();
             this.gboxOtherOption = new System.Windows.Forms.GroupBox();
+            this.btnClearPageSeparator = new System.Windows.Forms.Button();
+            this.btnResetEditorContent = new System.Windows.Forms.Button();
             this.checkBoxClearFormat = new System.Windows.Forms.CheckBox();
             this.checkBoxOnlyImages = new System.Windows.Forms.CheckBox();
-            this.btnResetContent = new System.Windows.Forms.Button();
+            this.statusStripArceditBottom = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLblImgCount = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLblWordsCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.listViewPubTypeinfo = new ArcDB.ListViewNF();
             this.pub_typeid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pub_typename = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pub_type_items = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.btnClearPageSeparator = new System.Windows.Forms.Button();
             this.gboxWebBrowser.SuspendLayout();
             this.gboxArcPics.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -105,6 +108,7 @@ namespace ArcEdit
             this.gboxAutopageType.SuspendLayout();
             this.gboxParams.SuspendLayout();
             this.gboxOtherOption.SuspendLayout();
+            this.statusStripArceditBottom.SuspendLayout();
             this.SuspendLayout();
             // 
             // gboxWebBrowser
@@ -114,7 +118,7 @@ namespace ArcEdit
             this.gboxWebBrowser.Margin = new System.Windows.Forms.Padding(2);
             this.gboxWebBrowser.Name = "gboxWebBrowser";
             this.gboxWebBrowser.Padding = new System.Windows.Forms.Padding(2);
-            this.gboxWebBrowser.Size = new System.Drawing.Size(541, 563);
+            this.gboxWebBrowser.Size = new System.Drawing.Size(541, 539);
             this.gboxWebBrowser.TabIndex = 47;
             this.gboxWebBrowser.TabStop = false;
             this.gboxWebBrowser.Text = "内容编辑";
@@ -126,7 +130,7 @@ namespace ArcEdit
             this.webBrowserArcContent.Margin = new System.Windows.Forms.Padding(2);
             this.webBrowserArcContent.MinimumSize = new System.Drawing.Size(13, 13);
             this.webBrowserArcContent.Name = "webBrowserArcContent";
-            this.webBrowserArcContent.Size = new System.Drawing.Size(537, 545);
+            this.webBrowserArcContent.Size = new System.Drawing.Size(537, 521);
             this.webBrowserArcContent.TabIndex = 39;
             // 
             // gboxArcPics
@@ -307,7 +311,7 @@ namespace ArcEdit
             this.gboxImageListView.Margin = new System.Windows.Forms.Padding(2);
             this.gboxImageListView.Name = "gboxImageListView";
             this.gboxImageListView.Padding = new System.Windows.Forms.Padding(2);
-            this.gboxImageListView.Size = new System.Drawing.Size(390, 612);
+            this.gboxImageListView.Size = new System.Drawing.Size(390, 590);
             this.gboxImageListView.TabIndex = 45;
             this.gboxImageListView.TabStop = false;
             this.gboxImageListView.Text = "ImageListView";
@@ -322,7 +326,7 @@ namespace ArcEdit
             this.imageListView.Name = "imageListView";
             this.imageListView.PersistentCacheDirectory = "";
             this.imageListView.PersistentCacheSize = ((long)(100));
-            this.imageListView.Size = new System.Drawing.Size(386, 594);
+            this.imageListView.Size = new System.Drawing.Size(386, 572);
             this.imageListView.TabIndex = 0;
             this.imageListView.SelectionChanged += new System.EventHandler(this.imageListView_SelectionChanged);
             // 
@@ -601,6 +605,7 @@ namespace ArcEdit
             this.radioBtnAutopage.TabStop = true;
             this.radioBtnAutopage.Text = "自动分页";
             this.radioBtnAutopage.UseVisualStyleBackColor = true;
+            this.radioBtnAutopage.CheckedChanged += new System.EventHandler(this.radioBtnAutopage_CheckedChanged);
             // 
             // radioBtnHandpage
             // 
@@ -616,8 +621,8 @@ namespace ArcEdit
             // 
             // gboxAutopageType
             // 
-            this.gboxAutopageType.Controls.Add(this.radioBtnPagebyImages);
-            this.gboxAutopageType.Controls.Add(this.radioBtnPagebyWords);
+            this.gboxAutopageType.Controls.Add(this.radioBtnAutopagebyImages);
+            this.gboxAutopageType.Controls.Add(this.radioBtnAutopagebyWords);
             this.gboxAutopageType.Location = new System.Drawing.Point(306, 243);
             this.gboxAutopageType.Name = "gboxAutopageType";
             this.gboxAutopageType.Size = new System.Drawing.Size(233, 48);
@@ -625,31 +630,32 @@ namespace ArcEdit
             this.gboxAutopageType.TabStop = false;
             this.gboxAutopageType.Text = "自动分页类型";
             // 
-            // radioBtnPagebyImages
+            // radioBtnAutopagebyImages
             // 
-            this.radioBtnPagebyImages.AutoSize = true;
-            this.radioBtnPagebyImages.Location = new System.Drawing.Point(116, 18);
-            this.radioBtnPagebyImages.Name = "radioBtnPagebyImages";
-            this.radioBtnPagebyImages.Size = new System.Drawing.Size(95, 16);
-            this.radioBtnPagebyImages.TabIndex = 1;
-            this.radioBtnPagebyImages.TabStop = true;
-            this.radioBtnPagebyImages.Text = "按图片数分页";
-            this.radioBtnPagebyImages.UseVisualStyleBackColor = true;
+            this.radioBtnAutopagebyImages.AutoSize = true;
+            this.radioBtnAutopagebyImages.Checked = true;
+            this.radioBtnAutopagebyImages.Location = new System.Drawing.Point(116, 18);
+            this.radioBtnAutopagebyImages.Name = "radioBtnAutopagebyImages";
+            this.radioBtnAutopagebyImages.Size = new System.Drawing.Size(95, 16);
+            this.radioBtnAutopagebyImages.TabIndex = 1;
+            this.radioBtnAutopagebyImages.TabStop = true;
+            this.radioBtnAutopagebyImages.Text = "按图片数分页";
+            this.radioBtnAutopagebyImages.UseVisualStyleBackColor = true;
             // 
-            // radioBtnPagebyWords
+            // radioBtnAutopagebyWords
             // 
-            this.radioBtnPagebyWords.AutoSize = true;
-            this.radioBtnPagebyWords.Location = new System.Drawing.Point(8, 18);
-            this.radioBtnPagebyWords.Name = "radioBtnPagebyWords";
-            this.radioBtnPagebyWords.Size = new System.Drawing.Size(83, 16);
-            this.radioBtnPagebyWords.TabIndex = 0;
-            this.radioBtnPagebyWords.TabStop = true;
-            this.radioBtnPagebyWords.Text = "按字数分页";
-            this.radioBtnPagebyWords.UseVisualStyleBackColor = true;
+            this.radioBtnAutopagebyWords.AutoSize = true;
+            this.radioBtnAutopagebyWords.Enabled = false;
+            this.radioBtnAutopagebyWords.Location = new System.Drawing.Point(8, 18);
+            this.radioBtnAutopagebyWords.Name = "radioBtnAutopagebyWords";
+            this.radioBtnAutopagebyWords.Size = new System.Drawing.Size(83, 16);
+            this.radioBtnAutopagebyWords.TabIndex = 0;
+            this.radioBtnAutopagebyWords.Text = "按字数分页";
+            this.radioBtnAutopagebyWords.UseVisualStyleBackColor = true;
             // 
             // gboxParams
             // 
-            this.gboxParams.Controls.Add(this.tboxPageParams);
+            this.gboxParams.Controls.Add(this.tboxAutopageParams);
             this.gboxParams.Controls.Add(this.lblPageParams);
             this.gboxParams.Location = new System.Drawing.Point(8, 299);
             this.gboxParams.Name = "gboxParams";
@@ -658,12 +664,12 @@ namespace ArcEdit
             this.gboxParams.TabStop = false;
             this.gboxParams.Text = "分页参数";
             // 
-            // tboxPageParams
+            // tboxAutopageParams
             // 
-            this.tboxPageParams.Location = new System.Drawing.Point(145, 12);
-            this.tboxPageParams.Name = "tboxPageParams";
-            this.tboxPageParams.Size = new System.Drawing.Size(380, 21);
-            this.tboxPageParams.TabIndex = 1;
+            this.tboxAutopageParams.Location = new System.Drawing.Point(145, 12);
+            this.tboxAutopageParams.Name = "tboxAutopageParams";
+            this.tboxAutopageParams.Size = new System.Drawing.Size(380, 21);
+            this.tboxAutopageParams.TabIndex = 1;
             // 
             // lblPageParams
             // 
@@ -677,7 +683,7 @@ namespace ArcEdit
             // gboxOtherOption
             // 
             this.gboxOtherOption.Controls.Add(this.btnClearPageSeparator);
-            this.gboxOtherOption.Controls.Add(this.btnResetContent);
+            this.gboxOtherOption.Controls.Add(this.btnResetEditorContent);
             this.gboxOtherOption.Controls.Add(this.checkBoxClearFormat);
             this.gboxOtherOption.Controls.Add(this.checkBoxOnlyImages);
             this.gboxOtherOption.Location = new System.Drawing.Point(8, 348);
@@ -686,6 +692,26 @@ namespace ArcEdit
             this.gboxOtherOption.TabIndex = 51;
             this.gboxOtherOption.TabStop = false;
             this.gboxOtherOption.Text = "其他选项";
+            // 
+            // btnClearPageSeparator
+            // 
+            this.btnClearPageSeparator.Location = new System.Drawing.Point(296, 16);
+            this.btnClearPageSeparator.Name = "btnClearPageSeparator";
+            this.btnClearPageSeparator.Size = new System.Drawing.Size(107, 23);
+            this.btnClearPageSeparator.TabIndex = 3;
+            this.btnClearPageSeparator.Text = "清除所有分页";
+            this.btnClearPageSeparator.UseVisualStyleBackColor = true;
+            this.btnClearPageSeparator.Click += new System.EventHandler(this.btnClearPageSeparator_Click);
+            // 
+            // btnResetEditorContent
+            // 
+            this.btnResetEditorContent.Location = new System.Drawing.Point(418, 16);
+            this.btnResetEditorContent.Name = "btnResetEditorContent";
+            this.btnResetEditorContent.Size = new System.Drawing.Size(107, 23);
+            this.btnResetEditorContent.TabIndex = 2;
+            this.btnResetEditorContent.Text = "重置编辑器内容";
+            this.btnResetEditorContent.UseVisualStyleBackColor = true;
+            this.btnResetEditorContent.Click += new System.EventHandler(this.btnResetContent_Click);
             // 
             // checkBoxClearFormat
             // 
@@ -696,6 +722,7 @@ namespace ArcEdit
             this.checkBoxClearFormat.TabIndex = 1;
             this.checkBoxClearFormat.Text = "去除空格";
             this.checkBoxClearFormat.UseVisualStyleBackColor = true;
+            this.checkBoxClearFormat.CheckedChanged += new System.EventHandler(this.checkBoxClearFormat_CheckedChanged);
             // 
             // checkBoxOnlyImages
             // 
@@ -706,16 +733,30 @@ namespace ArcEdit
             this.checkBoxOnlyImages.TabIndex = 0;
             this.checkBoxOnlyImages.Text = "只保留图片";
             this.checkBoxOnlyImages.UseVisualStyleBackColor = true;
+            this.checkBoxOnlyImages.CheckedChanged += new System.EventHandler(this.checkBoxOnlyImages_CheckedChanged);
             // 
-            // btnResetContent
+            // statusStripArceditBottom
             // 
-            this.btnResetContent.Location = new System.Drawing.Point(432, 16);
-            this.btnResetContent.Name = "btnResetContent";
-            this.btnResetContent.Size = new System.Drawing.Size(93, 23);
-            this.btnResetContent.TabIndex = 2;
-            this.btnResetContent.Text = "重置文章内容";
-            this.btnResetContent.UseVisualStyleBackColor = true;
-            this.btnResetContent.Click += new System.EventHandler(this.btnResetContent_Click);
+            this.statusStripArceditBottom.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLblImgCount,
+            this.toolStripStatusLblWordsCount});
+            this.statusStripArceditBottom.Location = new System.Drawing.Point(0, 950);
+            this.statusStripArceditBottom.Name = "statusStripArceditBottom";
+            this.statusStripArceditBottom.Size = new System.Drawing.Size(950, 22);
+            this.statusStripArceditBottom.TabIndex = 52;
+            this.statusStripArceditBottom.Text = "statusStrip1";
+            // 
+            // toolStripStatusLblImgCount
+            // 
+            this.toolStripStatusLblImgCount.Name = "toolStripStatusLblImgCount";
+            this.toolStripStatusLblImgCount.Size = new System.Drawing.Size(83, 17);
+            this.toolStripStatusLblImgCount.Text = "文章图片数：0";
+            // 
+            // toolStripStatusLblWordsCount
+            // 
+            this.toolStripStatusLblWordsCount.Name = "toolStripStatusLblWordsCount";
+            this.toolStripStatusLblWordsCount.Size = new System.Drawing.Size(71, 17);
+            this.toolStripStatusLblWordsCount.Text = "文章字数：0";
             // 
             // listViewPubTypeinfo
             // 
@@ -751,21 +792,12 @@ namespace ArcEdit
             this.pub_type_items.Text = "栏目文章数";
             this.pub_type_items.Width = 130;
             // 
-            // btnClearPageSeparator
-            // 
-            this.btnClearPageSeparator.Location = new System.Drawing.Point(319, 16);
-            this.btnClearPageSeparator.Name = "btnClearPageSeparator";
-            this.btnClearPageSeparator.Size = new System.Drawing.Size(93, 23);
-            this.btnClearPageSeparator.TabIndex = 3;
-            this.btnClearPageSeparator.Text = "清除所有分页";
-            this.btnClearPageSeparator.UseVisualStyleBackColor = true;
-            this.btnClearPageSeparator.Click += new System.EventHandler(this.btnClearPageSeparator_Click);
-            // 
             // ArticleEditForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(950, 972);
+            this.Controls.Add(this.statusStripArceditBottom);
             this.Controls.Add(this.gboxOtherOption);
             this.Controls.Add(this.gboxParams);
             this.Controls.Add(this.gboxAutopageType);
@@ -800,6 +832,8 @@ namespace ArcEdit
             this.gboxParams.PerformLayout();
             this.gboxOtherOption.ResumeLayout(false);
             this.gboxOtherOption.PerformLayout();
+            this.statusStripArceditBottom.ResumeLayout(false);
+            this.statusStripArceditBottom.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -858,16 +892,19 @@ namespace ArcEdit
         private System.Windows.Forms.RadioButton radioBtnHandpage;
         private System.Windows.Forms.RadioButton radioBtnAutopage;
         private System.Windows.Forms.GroupBox gboxAutopageType;
-        private System.Windows.Forms.RadioButton radioBtnPagebyImages;
-        private System.Windows.Forms.RadioButton radioBtnPagebyWords;
+        private System.Windows.Forms.RadioButton radioBtnAutopagebyImages;
+        private System.Windows.Forms.RadioButton radioBtnAutopagebyWords;
         private System.Windows.Forms.GroupBox gboxParams;
         private System.Windows.Forms.Label lblPageParams;
-        private System.Windows.Forms.TextBox tboxPageParams;
+        private System.Windows.Forms.TextBox tboxAutopageParams;
         private System.Windows.Forms.GroupBox gboxOtherOption;
         private System.Windows.Forms.CheckBox checkBoxClearFormat;
         private System.Windows.Forms.CheckBox checkBoxOnlyImages;
         private System.Windows.Forms.RadioButton radioBtnOriginPage;
-        private System.Windows.Forms.Button btnResetContent;
+        private System.Windows.Forms.Button btnResetEditorContent;
         private System.Windows.Forms.Button btnClearPageSeparator;
+        private System.Windows.Forms.StatusStrip statusStripArceditBottom;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLblImgCount;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLblWordsCount;
     }
 }
