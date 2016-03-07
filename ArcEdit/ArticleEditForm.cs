@@ -10,6 +10,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SharpMysql;
+using SharpConfig;
 using System.Threading;
 using HtmlAgilityPack;
 using System.Collections;
@@ -74,7 +75,10 @@ namespace ArcEdit
         private readonly string _RootPath = Application.StartupPath + @"\";                                            //程序根目录
         private string _thumbRootPath = Application.StartupPath + @"\temp\thumb\";                          //文章缩略图保存主目录
         private string _imgRootPath = Application.StartupPath + @"\temp\img\";                                   //文章缩略图保存主目录
-        private int _aid=0;                                                                                                                           //文章在采集库中的ID
+        private string _errorLogPath = Application.StartupPath + @"\errorLog\";                                    //错误日志目录
+        private Configuration _sysConfig;                                                                                                   //sharpconfig对象
+        private string _configFile;                                                                                                                //配置文件
+        private int _aid = 0;                                                                                                                           //文章在采集库中的ID
         private string _coConnString;                                                                                                          //采集数据库mysql连接配置参数
         private string _pubConnString;                                                                                                       //CMS数据库mysql连接配置参数
         private string _pubTablePrename;                                                                                                  //CMS数据表中的表前缀，如果有的话
@@ -82,7 +86,7 @@ namespace ArcEdit
         private string _arcCoTypename;                                                                                                      //文章所属采集分类名称
         private string _arcTitle;                                                                                                                    //文章标题
         private string _arcLitpic;                                                                                                                  //文章缩略图URL
-        private int _arcLitpicID;                                                                                                                   //当前修改的文章缩略图ID
+        private int _arcLitpicID = 0;                                                                                                               //当前修改的文章缩略图ID
         private int _arcPiCount;                                                                                                                   //文章包含图片数量
         private string _arcSourceSite;                                                                                                          //文章采集来源
         private string _arcKeywords;                                                                                                          //文章关键词
@@ -90,13 +94,13 @@ namespace ArcEdit
         private string _arcContent;                                                                                                              //从数据库中获取文章内容
         private string _arcTempContent;                                                                                                     //编辑中的文件内容
         private string _arcUsedbyPc;                                                                                                           //文章是否已发布
-        private int _arcCmsAid=0;                                                                                                               //文章发布后对于在CMS中的文章ID
-        private int _arcPubTypeid=0;                                                                                                          //当前选中发布分类ID
+        private int _arcCmsAid = 0;                                                                                                               //文章发布后对于在CMS中的文章ID
+        private int _arcPubTypeid = 0;                                                                                                          //当前选中发布分类ID
         private string _arcPubTypename;                                                                                                    //当前选中发布分类名称
         private int _arcWordsCount = 0;                                                                                                     //文章内容文字数量
         private string _pubFilterKeywords;
-        private List<Dictionary<string,string>> _arcPicUrls;                                                                       //保存文章所有图片URL信息，每个元素的key为图片在arc_pics表中的ID 
-        private Dictionary<string,Dictionary<string,Dictionary<string,string>>> _dicArcThumbs;           //保存文章所有缩略图信息      
+        private List<Dictionary<string, string>> _arcPicUrls;                                                                       //保存文章所有图片URL信息，每个元素的key为图片在arc_pics表中的ID 
+        private Dictionary<string, Dictionary<string, Dictionary<string, string>>> _dicArcThumbs;           //保存文章所有缩略图信息      
         private Dictionary<string, Dictionary<string, string>> _dicArcPics;                                               //保存文章中所有的图片信息
         private List<string> _cfgThumbSizeList;                                                     //需要生成多种规格缩略图所指定的宽度，此数据从数据库sys_config表cfg_thumb_size记录中获取，比如158*140表示宽158，高140，指定宽高则按Cut模式生成缩略图，只指定宽的话则按等比宽度生成。多种规格使用“|”分隔
         private int _cfgThumbWidthDefault = 0;                                                    //生成缩略图时设置的缩略图宽度，当从数据库中获取不到缩略图尺寸设置时使用
@@ -109,17 +113,21 @@ namespace ArcEdit
         private int _imgRequestFinished = 0;                                                         //异步下载文章图片完成下载请求数量
         private bool _arcTempContentDivCleared = false;                                    //去除编辑器内容中的DIV，文章采集入库的时候，使用div把原文装的分页内容封装起来
         System.Threading.Timer _timerDownload;                                                //监控图片下载
-        private Dictionary<string,Dictionary<string, string>> _thumbDownloadResult;           //保存缩略图下载结果
+        private Dictionary<string, Dictionary<string, string>> _thumbDownloadResult;           //保存缩略图下载结果
         private Dictionary<string, Dictionary<string, string>> _imgDownloadResult;               //保存文章图片下载结果
         private CancellationTokenSource cancelTokenSource;
 
-        public ArticleEditForm(string coConnString, string pubConnString, int aid,string pubTablePrename, System.Windows.Forms.Form ParentForm)
+        public ArticleEditForm(string coConnString, string pubConnString, int aid, string pubTablePrename, System.Windows.Forms.Form ParentForm)
         {
+            _configFile = _RootPath + "config.ini";
+            if (File.Exists(_configFile))
+            {
+                _sysConfig = Configuration.LoadFromFile(_configFile);
+            }
             _coConnString = coConnString;
             _pubConnString = pubConnString;
             _pubTablePrename = pubTablePrename;
             _aid = aid;
-            _arcLitpicID = 0;
             InitializeComponent();
             CheckForIllegalCrossThreadCalls = false;
             StartPosition = FormStartPosition.Manual;
@@ -139,12 +147,35 @@ namespace ArcEdit
 
         }
 
+        //加载配置文件中相关编辑配置
+        private void loadSysConfig()
+        {
+            if (_sysConfig != null)
+            {
+                tboxPubTypeid.Text = _sysConfig["Editor"]["PubTypeid"].StringValue;
+                tboxPubTypename.Text = _sysConfig["Editor"]["PubTypename"].StringValue;
+            }
+        }
+
+        //保存配置文件中相关编辑配置
+        private void saveSysConfig()
+        {
+            if (_sysConfig != null)
+            {
+                _sysConfig["Editor"]["PubTypeid"].SetValue(tboxPubTypeid.Text);
+                _sysConfig["Editor"]["PubTypename"].SetValue(tboxPubTypename.Text);
+                _sysConfig.SaveToFile(_configFile);
+            }
+        }
+
+
         #region 控件事件触发方法
         //ArticleEditForm 加载事件触发
         private void ArticleEditForm_Load(object sender, EventArgs e)
         {
             loadPubTypeInfo(); //加载CMS分类信息
             loadArticleContents();
+            loadSysConfig();
             webBrowserArcContent.Url = new System.Uri(_RootPath + @"kindeditor\e.html", System.UriKind.Absolute);
             webBrowserArcContent.ObjectForScripting = this;
             downloadAllpic();
@@ -162,10 +193,11 @@ namespace ArcEdit
                     tboxPubTypename.Text = selectedItem.SubItems[1].Text;
                     _arcPubTypename = selectedItem.SubItems[1].Text;
                     _arcPubTypeid = 0;
-                    if (int.TryParse(selectedItem.SubItems[0].Text,out _arcPubTypeid))
+                    if (int.TryParse(selectedItem.SubItems[0].Text, out _arcPubTypeid))
                     {
                         _arcPubTypeid = int.Parse(selectedItem.SubItems[0].Text);
                     }
+                    saveSysConfig();
                 }
             }
             catch (Exception ex)
@@ -220,17 +252,17 @@ namespace ArcEdit
                 sel = imageListView.SelectedItems[0];
                 string selPicFullpath = sel.FileName;
                 string selPicFilename = Path.GetFileName(selPicFullpath);
-                if (cboxPicType.Text=="缩略图")
+                if (cboxPicType.Text == "缩略图")
                 {
                     string thumbSize = cboxThumbSize.Text;
                     string thumbURL = _dicArcThumbs[thumbSize][selPicFilename]["thumb_url"];
                     string pid = _dicArcThumbs[thumbSize][selPicFilename]["pid"];
-                    if (int.TryParse(pid,out _arcLitpicID))
+                    if (int.TryParse(pid, out _arcLitpicID))
                     {
                         tboxArticleLitpicURL.Text = thumbURL;
                     }
                 }
-                else if (cboxPicType.Text=="文章图片")
+                else if (cboxPicType.Text == "文章图片")
                 {
 
                 }
@@ -239,17 +271,17 @@ namespace ArcEdit
         //图片类型选项值改变事件
         private void cboxPicType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboxPicType.Text=="缩略图")
+            if (cboxPicType.Text == "缩略图")
             {
                 cboxThumbSize.Enabled = true;
                 displayArcPics("缩略图");
             }
-            else if (cboxPicType.Text== "文章图片")
+            else if (cboxPicType.Text == "文章图片")
             {
                 cboxThumbSize.Enabled = false;
                 displayArcPics("文章图片");
             }
-            
+
         }
         //缩略图尺寸选项值改变事件
         private void cboxThumbSize_SelectedIndexChanged(object sender, EventArgs e)
@@ -286,7 +318,7 @@ namespace ArcEdit
         {
             string autopageType = "";
             int autopageParam = 0;
-            
+
             if (radioBtnAutopagebyImages.Checked)
             {
                 autopageType = "image";
@@ -444,7 +476,6 @@ namespace ArcEdit
 
         #region 文章内容处理相关方法
 
-
         //加载发布分类信息
         private void loadPubTypeInfo(string searchCondition = "")
         {
@@ -512,18 +543,23 @@ namespace ArcEdit
                 tboxArticleLitpicURL.Text = _arcLitpic;
                 tboxArticleKeywords.Text = _arcKeywords;
                 tboxArticleDescription.Text = _arcDescription;
-                tboxAticleTypename.Text = _arcCoTypeid.ToString();
                 toolStripStatusLblImgCount.Text = "文章图片数：" + _arcPiCount.ToString();
                 toolStripStatusLblWordsCount.Text = "文章字数：" + _arcWordsCount.ToString();
-                if (_arcPiCount<=16)
+                if (_arcPiCount <= 16)
                 {
                     tboxAutopageParams.Text = "1";
                 }
-                else if (_arcPiCount >16)
+                else if (_arcPiCount > 16)
                 {
                     tboxAutopageParams.Text = "2";
                 }
-
+                sql = "select type_name from arc_type where tid='" + _arcCoTypeid.ToString() + "'";
+                List<Dictionary<string, object>> dbResult = myDB.GetRecords(sql, ref sResult, ref counts);
+                if (sResult == mySqlDB.SUCCESS && counts > 0)
+                {
+                    _arcCoTypename = dbResult[0]["type_name"].ToString();
+                    tboxAticleTypename.Text = _arcCoTypename;
+                }
             }
             else
             {
@@ -532,13 +568,108 @@ namespace ArcEdit
 
         }
 
+        //检查编辑表单中的数据是否都是正确的或者不为空
+        private bool validateArticle()
+        {
+            List<string> testConfig = new List<string> { _arcTitle, _arcCoTypeid.ToString(), _arcLitpic, _arcTempContent };
+            foreach (string item in testConfig)
+            {
+                if (string.IsNullOrWhiteSpace(item))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
+        //将相关变量设置为表单中的数据
+        private void setVarValue()
+        {
+            _arcTitle = tboxArticleTitle.Text;
+            _arcLitpic = tboxArticleLitpicURL.Text;
+            _arcKeywords = tboxArticleKeywords.Text;
+            _arcDescription = tboxArticleDescription.Text;
+        }
+
+        private void saveErrorLog(string logFile,string errorMessage)
+        {
+            if (!Directory.Exists(_errorLogPath))
+            {
+                Directory.CreateDirectory(_errorLogPath);
+            }
+            File.AppendAllText(logFile, errorMessage + @"\r\n");
+
+        }
+
+        //将编辑过的内容保存到采集数据库中
+        private void saveArticle()
+        {
+            //string sql = "select type_id,   pic_count,    litpic,    title,    source_site,   keywords,   description,   content from arc_contents where aid = '" + _aid.ToString() + "'";
+            setVarValue();
+            if (validateArticle())
+            {
+                string logFile = _errorLogPath + _aid.ToString() + ".txt";
+                mySqlDB myCoDB = new mySqlDB(_coConnString);
+                string sResult = "";
+                int counts = 0;
+                DateTime currentTime = new DateTime();
+                currentTime = DateTime.Now;
+                string sql = "update arc_contents set title='" + mySqlDB.EscapeString(_arcTitle) + "'";
+                sql = sql + ",litpic='" + mySqlDB.EscapeString(_arcLitpic) + "'";
+                sql = sql + ",content='" + mySqlDB.EscapeString(_arcTempContent) + "'";
+                sql = sql + ",description='" + mySqlDB.EscapeString(_arcDescription) + "'";
+                sql = sql + ",keywords='" +mySqlDB.EscapeString(_arcKeywords) + "'";
+                sql = sql + ",edit_date='" + currentTime.ToString() + "'";
+                sql = sql + " where aid='" + _aid.ToString() + "'";
+                counts = myCoDB.executeDMLSQL(sql, ref sResult);
+                if (sResult==mySqlDB.SUCCESS)
+                {
+                    MessageBox.Show("保存成功！");
+                    if (_arcLitpicID!=0) //如果修改了当前文章的缩略图，将arc_pics表中的文章对应的图片信息
+                    {
+                        sql = "update arc_pics set is_thumb='no' where is_thumb='yes' and  aid='" + _aid.ToString() + "'";
+                        counts = myCoDB.executeDMLSQL(sql, ref sResult);
+                        if (sResult==mySqlDB.SUCCESS)
+                        {
+                            sql = "update arc_pics set is_thumb='yes' where pid='"+_arcLitpicID.ToString()+"' and  aid='" + _aid.ToString() + "'";
+                            counts = myCoDB.executeDMLSQL(sql, ref sResult);
+                            if (sResult!=mySqlDB.SUCCESS)
+                            {
+                                MessageBox.Show("更新arc_pics表错误！");
+                                saveErrorLog(logFile, sResult);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("更新arc_pics表错误！");
+                            saveErrorLog(logFile, sResult);
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("保存文章出错！请检查错误日志");
+                    saveErrorLog(logFile, sResult); //保存错误日志
+                }
+            }
+            else
+            {
+                MessageBox.Show("请检查表单数据，确保文章标题，缩略图URL，文章内容不能为空！");
+            }
+
+        }
+
+        //点击保存按钮
+        private void btnSaveArticle_Click(object sender, EventArgs e)
+        {
+            saveArticle();
+        }
 
         #endregion 文章内容处理完成
 
 
         #region 编辑器相关方法
-       
+
         //按字数自动分页
         private void autopageByWords(int autopageParam)
         {
@@ -1149,6 +1280,7 @@ namespace ArcEdit
                 filestream = new FileStream(savepath, FileMode.OpenOrCreate);
             }
         }
+
 
 
 

@@ -61,6 +61,10 @@ namespace ArcEdit
             this.lblPubTypename = new System.Windows.Forms.Label();
             this.tboxPubTypename = new System.Windows.Forms.TextBox();
             this.gboxListViewPubtype = new System.Windows.Forms.GroupBox();
+            this.listViewPubTypeinfo = new ArcDB.ListViewNF();
+            this.pub_typeid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.pub_typename = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.pub_type_items = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.gboxArcEdit = new System.Windows.Forms.GroupBox();
             this.tboxArticleLitpicURL = new System.Windows.Forms.TextBox();
             this.lblArticleLitpicURL = new System.Windows.Forms.Label();
@@ -93,10 +97,6 @@ namespace ArcEdit
             this.statusStripArceditBottom = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLblImgCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLblWordsCount = new System.Windows.Forms.ToolStripStatusLabel();
-            this.listViewPubTypeinfo = new ArcDB.ListViewNF();
-            this.pub_typeid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.pub_typename = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.pub_type_items = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.gboxWebBrowser.SuspendLayout();
             this.gboxArcPics.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -114,11 +114,9 @@ namespace ArcEdit
             // gboxWebBrowser
             // 
             this.gboxWebBrowser.Controls.Add(this.webBrowserArcContent);
-            this.gboxWebBrowser.Location = new System.Drawing.Point(8, 398);
-            this.gboxWebBrowser.Margin = new System.Windows.Forms.Padding(2);
+            this.gboxWebBrowser.Location = new System.Drawing.Point(12, 597);
             this.gboxWebBrowser.Name = "gboxWebBrowser";
-            this.gboxWebBrowser.Padding = new System.Windows.Forms.Padding(2);
-            this.gboxWebBrowser.Size = new System.Drawing.Size(541, 539);
+            this.gboxWebBrowser.Size = new System.Drawing.Size(812, 808);
             this.gboxWebBrowser.TabIndex = 47;
             this.gboxWebBrowser.TabStop = false;
             this.gboxWebBrowser.Text = "内容编辑";
@@ -126,11 +124,10 @@ namespace ArcEdit
             // webBrowserArcContent
             // 
             this.webBrowserArcContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webBrowserArcContent.Location = new System.Drawing.Point(2, 16);
-            this.webBrowserArcContent.Margin = new System.Windows.Forms.Padding(2);
-            this.webBrowserArcContent.MinimumSize = new System.Drawing.Size(13, 13);
+            this.webBrowserArcContent.Location = new System.Drawing.Point(3, 24);
+            this.webBrowserArcContent.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowserArcContent.Name = "webBrowserArcContent";
-            this.webBrowserArcContent.Size = new System.Drawing.Size(537, 521);
+            this.webBrowserArcContent.Size = new System.Drawing.Size(806, 781);
             this.webBrowserArcContent.TabIndex = 39;
             // 
             // gboxArcPics
@@ -139,11 +136,9 @@ namespace ArcEdit
             this.gboxArcPics.Controls.Add(this.cboxPicType);
             this.gboxArcPics.Controls.Add(this.lblThumbSize);
             this.gboxArcPics.Controls.Add(this.cboxThumbSize);
-            this.gboxArcPics.Location = new System.Drawing.Point(553, 243);
-            this.gboxArcPics.Margin = new System.Windows.Forms.Padding(2);
+            this.gboxArcPics.Location = new System.Drawing.Point(830, 364);
             this.gboxArcPics.Name = "gboxArcPics";
-            this.gboxArcPics.Padding = new System.Windows.Forms.Padding(2);
-            this.gboxArcPics.Size = new System.Drawing.Size(390, 48);
+            this.gboxArcPics.Size = new System.Drawing.Size(585, 72);
             this.gboxArcPics.TabIndex = 44;
             this.gboxArcPics.TabStop = false;
             this.gboxArcPics.Text = "图片选择";
@@ -151,10 +146,9 @@ namespace ArcEdit
             // lblPicType
             // 
             this.lblPicType.AutoSize = true;
-            this.lblPicType.Location = new System.Drawing.Point(204, 21);
-            this.lblPicType.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblPicType.Location = new System.Drawing.Point(306, 32);
             this.lblPicType.Name = "lblPicType";
-            this.lblPicType.Size = new System.Drawing.Size(83, 12);
+            this.lblPicType.Size = new System.Drawing.Size(125, 18);
             this.lblPicType.TabIndex = 43;
             this.lblPicType.Text = "选择图片类型:";
             // 
@@ -165,20 +159,18 @@ namespace ArcEdit
             this.cboxPicType.Items.AddRange(new object[] {
             "缩略图",
             "文章图片"});
-            this.cboxPicType.Location = new System.Drawing.Point(291, 17);
-            this.cboxPicType.Margin = new System.Windows.Forms.Padding(2);
+            this.cboxPicType.Location = new System.Drawing.Point(436, 26);
             this.cboxPicType.Name = "cboxPicType";
-            this.cboxPicType.Size = new System.Drawing.Size(92, 20);
+            this.cboxPicType.Size = new System.Drawing.Size(136, 26);
             this.cboxPicType.TabIndex = 42;
             this.cboxPicType.SelectedIndexChanged += new System.EventHandler(this.cboxPicType_SelectedIndexChanged);
             // 
             // lblThumbSize
             // 
             this.lblThumbSize.AutoSize = true;
-            this.lblThumbSize.Location = new System.Drawing.Point(6, 21);
-            this.lblThumbSize.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblThumbSize.Location = new System.Drawing.Point(9, 32);
             this.lblThumbSize.Name = "lblThumbSize";
-            this.lblThumbSize.Size = new System.Drawing.Size(95, 12);
+            this.lblThumbSize.Size = new System.Drawing.Size(143, 18);
             this.lblThumbSize.TabIndex = 40;
             this.lblThumbSize.Text = "选择缩略图规格:";
             // 
@@ -186,10 +178,9 @@ namespace ArcEdit
             // 
             this.cboxThumbSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboxThumbSize.FormattingEnabled = true;
-            this.cboxThumbSize.Location = new System.Drawing.Point(107, 17);
-            this.cboxThumbSize.Margin = new System.Windows.Forms.Padding(2);
+            this.cboxThumbSize.Location = new System.Drawing.Point(160, 26);
             this.cboxThumbSize.Name = "cboxThumbSize";
-            this.cboxThumbSize.Size = new System.Drawing.Size(92, 20);
+            this.cboxThumbSize.Size = new System.Drawing.Size(136, 26);
             this.cboxThumbSize.TabIndex = 39;
             this.cboxThumbSize.SelectedIndexChanged += new System.EventHandler(this.cboxThumbSize_SelectedIndexChanged);
             // 
@@ -206,9 +197,10 @@ namespace ArcEdit
             this.clearThumbsToolStripButton,
             this.toolStripDropDownButton1,
             this.toolStripSeparator4});
-            this.toolStrip1.Location = new System.Drawing.Point(553, 311);
+            this.toolStrip1.Location = new System.Drawing.Point(830, 466);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(264, 31);
+            this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStrip1.Size = new System.Drawing.Size(319, 31);
             this.toolStrip1.TabIndex = 41;
             // 
             // thumbnailsToolStripButton
@@ -275,27 +267,27 @@ namespace ArcEdit
             this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
             this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(102, 28);
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(154, 28);
             this.toolStripDropDownButton1.Text = "缩略图显示大小";
             // 
             // x96ToolStripMenuItem
             // 
             this.x96ToolStripMenuItem.Name = "x96ToolStripMenuItem";
-            this.x96ToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.x96ToolStripMenuItem.Size = new System.Drawing.Size(168, 30);
             this.x96ToolStripMenuItem.Text = "96x96";
             this.x96ToolStripMenuItem.Click += new System.EventHandler(this.x96ToolStripMenuItem_Click);
             // 
             // x120ToolStripMenuItem
             // 
             this.x120ToolStripMenuItem.Name = "x120ToolStripMenuItem";
-            this.x120ToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.x120ToolStripMenuItem.Size = new System.Drawing.Size(168, 30);
             this.x120ToolStripMenuItem.Text = "120x120";
             this.x120ToolStripMenuItem.Click += new System.EventHandler(this.x120ToolStripMenuItem_Click);
             // 
             // x200ToolStripMenuItem
             // 
             this.x200ToolStripMenuItem.Name = "x200ToolStripMenuItem";
-            this.x200ToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.x200ToolStripMenuItem.Size = new System.Drawing.Size(168, 30);
             this.x200ToolStripMenuItem.Text = "200x200";
             this.x200ToolStripMenuItem.Click += new System.EventHandler(this.x200ToolStripMenuItem_Click);
             // 
@@ -307,11 +299,9 @@ namespace ArcEdit
             // gboxImageListView
             // 
             this.gboxImageListView.Controls.Add(this.imageListView);
-            this.gboxImageListView.Location = new System.Drawing.Point(553, 347);
-            this.gboxImageListView.Margin = new System.Windows.Forms.Padding(2);
+            this.gboxImageListView.Location = new System.Drawing.Point(830, 520);
             this.gboxImageListView.Name = "gboxImageListView";
-            this.gboxImageListView.Padding = new System.Windows.Forms.Padding(2);
-            this.gboxImageListView.Size = new System.Drawing.Size(390, 590);
+            this.gboxImageListView.Size = new System.Drawing.Size(585, 885);
             this.gboxImageListView.TabIndex = 45;
             this.gboxImageListView.TabStop = false;
             this.gboxImageListView.Text = "ImageListView";
@@ -322,11 +312,12 @@ namespace ArcEdit
             this.imageListView.ColumnHeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.imageListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imageListView.GroupHeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
-            this.imageListView.Location = new System.Drawing.Point(2, 16);
+            this.imageListView.Location = new System.Drawing.Point(3, 24);
+            this.imageListView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.imageListView.Name = "imageListView";
             this.imageListView.PersistentCacheDirectory = "";
             this.imageListView.PersistentCacheSize = ((long)(100));
-            this.imageListView.Size = new System.Drawing.Size(386, 572);
+            this.imageListView.Size = new System.Drawing.Size(579, 858);
             this.imageListView.TabIndex = 0;
             this.imageListView.SelectionChanged += new System.EventHandler(this.imageListView_SelectionChanged);
             // 
@@ -339,21 +330,18 @@ namespace ArcEdit
             this.gboxPubTypename.Controls.Add(this.lblSearchPubTypename);
             this.gboxPubTypename.Controls.Add(this.lblPubTypename);
             this.gboxPubTypename.Controls.Add(this.tboxPubTypename);
-            this.gboxPubTypename.Location = new System.Drawing.Point(653, 8);
-            this.gboxPubTypename.Margin = new System.Windows.Forms.Padding(2);
+            this.gboxPubTypename.Location = new System.Drawing.Point(980, 12);
             this.gboxPubTypename.Name = "gboxPubTypename";
-            this.gboxPubTypename.Padding = new System.Windows.Forms.Padding(2);
-            this.gboxPubTypename.Size = new System.Drawing.Size(291, 77);
+            this.gboxPubTypename.Size = new System.Drawing.Size(436, 116);
             this.gboxPubTypename.TabIndex = 20;
             this.gboxPubTypename.TabStop = false;
             this.gboxPubTypename.Text = "选择发布分类";
             // 
             // btnSearchPubTypename
             // 
-            this.btnSearchPubTypename.Location = new System.Drawing.Point(183, 44);
-            this.btnSearchPubTypename.Margin = new System.Windows.Forms.Padding(2);
+            this.btnSearchPubTypename.Location = new System.Drawing.Point(274, 66);
             this.btnSearchPubTypename.Name = "btnSearchPubTypename";
-            this.btnSearchPubTypename.Size = new System.Drawing.Size(94, 21);
+            this.btnSearchPubTypename.Size = new System.Drawing.Size(141, 32);
             this.btnSearchPubTypename.TabIndex = 15;
             this.btnSearchPubTypename.Text = "搜索";
             this.btnSearchPubTypename.UseVisualStyleBackColor = true;
@@ -361,402 +349,61 @@ namespace ArcEdit
             // 
             // tboxPubTypeid
             // 
-            this.tboxPubTypeid.Location = new System.Drawing.Point(37, 18);
-            this.tboxPubTypeid.Margin = new System.Windows.Forms.Padding(2);
+            this.tboxPubTypeid.Location = new System.Drawing.Point(56, 27);
             this.tboxPubTypeid.Name = "tboxPubTypeid";
-            this.tboxPubTypeid.Size = new System.Drawing.Size(64, 21);
+            this.tboxPubTypeid.Size = new System.Drawing.Size(94, 28);
             this.tboxPubTypeid.TabIndex = 14;
             // 
             // lblPubTypeid
             // 
             this.lblPubTypeid.AutoSize = true;
-            this.lblPubTypeid.Location = new System.Drawing.Point(4, 21);
-            this.lblPubTypeid.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblPubTypeid.Location = new System.Drawing.Point(6, 32);
             this.lblPubTypeid.Name = "lblPubTypeid";
-            this.lblPubTypeid.Size = new System.Drawing.Size(29, 12);
+            this.lblPubTypeid.Size = new System.Drawing.Size(44, 18);
             this.lblPubTypeid.TabIndex = 13;
             this.lblPubTypeid.Text = "ID: ";
             // 
             // tboxSearchPubTypename
             // 
-            this.tboxSearchPubTypename.Location = new System.Drawing.Point(71, 46);
-            this.tboxSearchPubTypename.Margin = new System.Windows.Forms.Padding(2);
+            this.tboxSearchPubTypename.Location = new System.Drawing.Point(106, 69);
             this.tboxSearchPubTypename.Name = "tboxSearchPubTypename";
-            this.tboxSearchPubTypename.Size = new System.Drawing.Size(109, 21);
+            this.tboxSearchPubTypename.Size = new System.Drawing.Size(162, 28);
             this.tboxSearchPubTypename.TabIndex = 3;
             // 
             // lblSearchPubTypename
             // 
             this.lblSearchPubTypename.AutoSize = true;
-            this.lblSearchPubTypename.Location = new System.Drawing.Point(4, 49);
-            this.lblSearchPubTypename.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblSearchPubTypename.Location = new System.Drawing.Point(6, 74);
             this.lblSearchPubTypename.Name = "lblSearchPubTypename";
-            this.lblSearchPubTypename.Size = new System.Drawing.Size(59, 12);
+            this.lblSearchPubTypename.Size = new System.Drawing.Size(89, 18);
             this.lblSearchPubTypename.TabIndex = 1;
             this.lblSearchPubTypename.Text = "搜索分类:";
             // 
             // lblPubTypename
             // 
             this.lblPubTypename.AutoSize = true;
-            this.lblPubTypename.Location = new System.Drawing.Point(112, 21);
-            this.lblPubTypename.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblPubTypename.Location = new System.Drawing.Point(168, 32);
             this.lblPubTypename.Name = "lblPubTypename";
-            this.lblPubTypename.Size = new System.Drawing.Size(59, 12);
+            this.lblPubTypename.Size = new System.Drawing.Size(89, 18);
             this.lblPubTypename.TabIndex = 9;
             this.lblPubTypename.Text = "发布分类:";
             // 
             // tboxPubTypename
             // 
-            this.tboxPubTypename.Location = new System.Drawing.Point(183, 18);
-            this.tboxPubTypename.Margin = new System.Windows.Forms.Padding(2);
+            this.tboxPubTypename.Location = new System.Drawing.Point(274, 27);
             this.tboxPubTypename.Name = "tboxPubTypename";
-            this.tboxPubTypename.Size = new System.Drawing.Size(95, 21);
+            this.tboxPubTypename.Size = new System.Drawing.Size(140, 28);
             this.tboxPubTypename.TabIndex = 12;
             // 
             // gboxListViewPubtype
             // 
             this.gboxListViewPubtype.Controls.Add(this.listViewPubTypeinfo);
-            this.gboxListViewPubtype.Location = new System.Drawing.Point(654, 90);
-            this.gboxListViewPubtype.Margin = new System.Windows.Forms.Padding(2);
+            this.gboxListViewPubtype.Location = new System.Drawing.Point(981, 135);
             this.gboxListViewPubtype.Name = "gboxListViewPubtype";
-            this.gboxListViewPubtype.Padding = new System.Windows.Forms.Padding(2);
-            this.gboxListViewPubtype.Size = new System.Drawing.Size(291, 142);
+            this.gboxListViewPubtype.Size = new System.Drawing.Size(436, 213);
             this.gboxListViewPubtype.TabIndex = 0;
             this.gboxListViewPubtype.TabStop = false;
             this.gboxListViewPubtype.Text = "发布分类";
-            // 
-            // gboxArcEdit
-            // 
-            this.gboxArcEdit.Controls.Add(this.tboxArticleLitpicURL);
-            this.gboxArcEdit.Controls.Add(this.lblArticleLitpicURL);
-            this.gboxArcEdit.Controls.Add(this.tboxAticleTypename);
-            this.gboxArcEdit.Controls.Add(this.lblArticleTypename);
-            this.gboxArcEdit.Controls.Add(this.tboxArticleDescription);
-            this.gboxArcEdit.Controls.Add(this.lblArticleDescription);
-            this.gboxArcEdit.Controls.Add(this.tboxArticleKeywords);
-            this.gboxArcEdit.Controls.Add(this.lblArticleKeywords);
-            this.gboxArcEdit.Controls.Add(this.tboxArticleTitle);
-            this.gboxArcEdit.Controls.Add(this.lblArticleTitle);
-            this.gboxArcEdit.Controls.Add(this.btnPublishArticle);
-            this.gboxArcEdit.Controls.Add(this.btnSaveArticle);
-            this.gboxArcEdit.Controls.Add(this.label17);
-            this.gboxArcEdit.Location = new System.Drawing.Point(8, 8);
-            this.gboxArcEdit.Margin = new System.Windows.Forms.Padding(2);
-            this.gboxArcEdit.Name = "gboxArcEdit";
-            this.gboxArcEdit.Padding = new System.Windows.Forms.Padding(2);
-            this.gboxArcEdit.Size = new System.Drawing.Size(642, 224);
-            this.gboxArcEdit.TabIndex = 46;
-            this.gboxArcEdit.TabStop = false;
-            this.gboxArcEdit.Text = "编辑发布文章";
-            // 
-            // tboxArticleLitpicURL
-            // 
-            this.tboxArticleLitpicURL.Location = new System.Drawing.Point(77, 191);
-            this.tboxArticleLitpicURL.Margin = new System.Windows.Forms.Padding(2);
-            this.tboxArticleLitpicURL.Name = "tboxArticleLitpicURL";
-            this.tboxArticleLitpicURL.Size = new System.Drawing.Size(559, 21);
-            this.tboxArticleLitpicURL.TabIndex = 36;
-            // 
-            // lblArticleLitpicURL
-            // 
-            this.lblArticleLitpicURL.AutoSize = true;
-            this.lblArticleLitpicURL.Location = new System.Drawing.Point(9, 193);
-            this.lblArticleLitpicURL.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblArticleLitpicURL.Name = "lblArticleLitpicURL";
-            this.lblArticleLitpicURL.Size = new System.Drawing.Size(65, 12);
-            this.lblArticleLitpicURL.TabIndex = 37;
-            this.lblArticleLitpicURL.Text = "缩略图URL:";
-            // 
-            // tboxAticleTypename
-            // 
-            this.tboxAticleTypename.Location = new System.Drawing.Point(77, 79);
-            this.tboxAticleTypename.Margin = new System.Windows.Forms.Padding(2);
-            this.tboxAticleTypename.Name = "tboxAticleTypename";
-            this.tboxAticleTypename.ReadOnly = true;
-            this.tboxAticleTypename.Size = new System.Drawing.Size(199, 21);
-            this.tboxAticleTypename.TabIndex = 30;
-            // 
-            // lblArticleTypename
-            // 
-            this.lblArticleTypename.AutoSize = true;
-            this.lblArticleTypename.Location = new System.Drawing.Point(9, 82);
-            this.lblArticleTypename.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblArticleTypename.Name = "lblArticleTypename";
-            this.lblArticleTypename.Size = new System.Drawing.Size(59, 12);
-            this.lblArticleTypename.TabIndex = 31;
-            this.lblArticleTypename.Text = "采集分类:";
-            // 
-            // tboxArticleDescription
-            // 
-            this.tboxArticleDescription.Location = new System.Drawing.Point(77, 104);
-            this.tboxArticleDescription.Margin = new System.Windows.Forms.Padding(2);
-            this.tboxArticleDescription.Multiline = true;
-            this.tboxArticleDescription.Name = "tboxArticleDescription";
-            this.tboxArticleDescription.Size = new System.Drawing.Size(559, 81);
-            this.tboxArticleDescription.TabIndex = 28;
-            // 
-            // lblArticleDescription
-            // 
-            this.lblArticleDescription.AutoSize = true;
-            this.lblArticleDescription.Location = new System.Drawing.Point(9, 107);
-            this.lblArticleDescription.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblArticleDescription.Name = "lblArticleDescription";
-            this.lblArticleDescription.Size = new System.Drawing.Size(59, 12);
-            this.lblArticleDescription.TabIndex = 29;
-            this.lblArticleDescription.Text = "文章概要:";
-            // 
-            // tboxArticleKeywords
-            // 
-            this.tboxArticleKeywords.Location = new System.Drawing.Point(373, 79);
-            this.tboxArticleKeywords.Margin = new System.Windows.Forms.Padding(2);
-            this.tboxArticleKeywords.Name = "tboxArticleKeywords";
-            this.tboxArticleKeywords.Size = new System.Drawing.Size(264, 21);
-            this.tboxArticleKeywords.TabIndex = 26;
-            // 
-            // lblArticleKeywords
-            // 
-            this.lblArticleKeywords.AutoSize = true;
-            this.lblArticleKeywords.Location = new System.Drawing.Point(304, 82);
-            this.lblArticleKeywords.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblArticleKeywords.Name = "lblArticleKeywords";
-            this.lblArticleKeywords.Size = new System.Drawing.Size(47, 12);
-            this.lblArticleKeywords.TabIndex = 27;
-            this.lblArticleKeywords.Text = "关键词:";
-            // 
-            // tboxArticleTitle
-            // 
-            this.tboxArticleTitle.Location = new System.Drawing.Point(77, 53);
-            this.tboxArticleTitle.Margin = new System.Windows.Forms.Padding(2);
-            this.tboxArticleTitle.Name = "tboxArticleTitle";
-            this.tboxArticleTitle.Size = new System.Drawing.Size(559, 21);
-            this.tboxArticleTitle.TabIndex = 25;
-            // 
-            // lblArticleTitle
-            // 
-            this.lblArticleTitle.AutoSize = true;
-            this.lblArticleTitle.Location = new System.Drawing.Point(9, 56);
-            this.lblArticleTitle.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblArticleTitle.Name = "lblArticleTitle";
-            this.lblArticleTitle.Size = new System.Drawing.Size(59, 12);
-            this.lblArticleTitle.TabIndex = 25;
-            this.lblArticleTitle.Text = "文章标题:";
-            // 
-            // btnPublishArticle
-            // 
-            this.btnPublishArticle.Location = new System.Drawing.Point(117, 21);
-            this.btnPublishArticle.Margin = new System.Windows.Forms.Padding(2);
-            this.btnPublishArticle.Name = "btnPublishArticle";
-            this.btnPublishArticle.Size = new System.Drawing.Size(94, 21);
-            this.btnPublishArticle.TabIndex = 25;
-            this.btnPublishArticle.Text = "发布文章";
-            this.btnPublishArticle.UseVisualStyleBackColor = true;
-            // 
-            // btnSaveArticle
-            // 
-            this.btnSaveArticle.Location = new System.Drawing.Point(11, 21);
-            this.btnSaveArticle.Margin = new System.Windows.Forms.Padding(2);
-            this.btnSaveArticle.Name = "btnSaveArticle";
-            this.btnSaveArticle.Size = new System.Drawing.Size(94, 21);
-            this.btnSaveArticle.TabIndex = 24;
-            this.btnSaveArticle.Text = "保存文章";
-            this.btnSaveArticle.UseVisualStyleBackColor = true;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(-305, 17);
-            this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(59, 12);
-            this.label17.TabIndex = 22;
-            this.label17.Text = "搜索分类:";
-            // 
-            // gboxPageSpliter
-            // 
-            this.gboxPageSpliter.Controls.Add(this.radioBtnOriginPage);
-            this.gboxPageSpliter.Controls.Add(this.radioBtnAutopage);
-            this.gboxPageSpliter.Controls.Add(this.radioBtnHandpage);
-            this.gboxPageSpliter.Location = new System.Drawing.Point(8, 243);
-            this.gboxPageSpliter.Name = "gboxPageSpliter";
-            this.gboxPageSpliter.Size = new System.Drawing.Size(276, 48);
-            this.gboxPageSpliter.TabIndex = 48;
-            this.gboxPageSpliter.TabStop = false;
-            this.gboxPageSpliter.Text = "添加分隔符";
-            // 
-            // radioBtnOriginPage
-            // 
-            this.radioBtnOriginPage.AutoSize = true;
-            this.radioBtnOriginPage.Location = new System.Drawing.Point(11, 18);
-            this.radioBtnOriginPage.Name = "radioBtnOriginPage";
-            this.radioBtnOriginPage.Size = new System.Drawing.Size(71, 16);
-            this.radioBtnOriginPage.TabIndex = 2;
-            this.radioBtnOriginPage.TabStop = true;
-            this.radioBtnOriginPage.Text = "原始分页";
-            this.radioBtnOriginPage.UseVisualStyleBackColor = true;
-            this.radioBtnOriginPage.CheckedChanged += new System.EventHandler(this.radioBtnOriginPage_CheckedChanged);
-            // 
-            // radioBtnAutopage
-            // 
-            this.radioBtnAutopage.AutoSize = true;
-            this.radioBtnAutopage.Location = new System.Drawing.Point(189, 18);
-            this.radioBtnAutopage.Name = "radioBtnAutopage";
-            this.radioBtnAutopage.Size = new System.Drawing.Size(71, 16);
-            this.radioBtnAutopage.TabIndex = 1;
-            this.radioBtnAutopage.TabStop = true;
-            this.radioBtnAutopage.Text = "自动分页";
-            this.radioBtnAutopage.UseVisualStyleBackColor = true;
-            this.radioBtnAutopage.CheckedChanged += new System.EventHandler(this.radioBtnAutopage_CheckedChanged);
-            // 
-            // radioBtnHandpage
-            // 
-            this.radioBtnHandpage.AutoSize = true;
-            this.radioBtnHandpage.Location = new System.Drawing.Point(100, 18);
-            this.radioBtnHandpage.Name = "radioBtnHandpage";
-            this.radioBtnHandpage.Size = new System.Drawing.Size(71, 16);
-            this.radioBtnHandpage.TabIndex = 0;
-            this.radioBtnHandpage.TabStop = true;
-            this.radioBtnHandpage.Text = "手工分页";
-            this.radioBtnHandpage.UseVisualStyleBackColor = true;
-            this.radioBtnHandpage.CheckedChanged += new System.EventHandler(this.radioBtnHandpage_CheckedChanged);
-            // 
-            // gboxAutopageType
-            // 
-            this.gboxAutopageType.Controls.Add(this.radioBtnAutopagebyImages);
-            this.gboxAutopageType.Controls.Add(this.radioBtnAutopagebyWords);
-            this.gboxAutopageType.Location = new System.Drawing.Point(306, 243);
-            this.gboxAutopageType.Name = "gboxAutopageType";
-            this.gboxAutopageType.Size = new System.Drawing.Size(233, 48);
-            this.gboxAutopageType.TabIndex = 49;
-            this.gboxAutopageType.TabStop = false;
-            this.gboxAutopageType.Text = "自动分页类型";
-            // 
-            // radioBtnAutopagebyImages
-            // 
-            this.radioBtnAutopagebyImages.AutoSize = true;
-            this.radioBtnAutopagebyImages.Checked = true;
-            this.radioBtnAutopagebyImages.Location = new System.Drawing.Point(116, 18);
-            this.radioBtnAutopagebyImages.Name = "radioBtnAutopagebyImages";
-            this.radioBtnAutopagebyImages.Size = new System.Drawing.Size(95, 16);
-            this.radioBtnAutopagebyImages.TabIndex = 1;
-            this.radioBtnAutopagebyImages.TabStop = true;
-            this.radioBtnAutopagebyImages.Text = "按图片数分页";
-            this.radioBtnAutopagebyImages.UseVisualStyleBackColor = true;
-            // 
-            // radioBtnAutopagebyWords
-            // 
-            this.radioBtnAutopagebyWords.AutoSize = true;
-            this.radioBtnAutopagebyWords.Enabled = false;
-            this.radioBtnAutopagebyWords.Location = new System.Drawing.Point(8, 18);
-            this.radioBtnAutopagebyWords.Name = "radioBtnAutopagebyWords";
-            this.radioBtnAutopagebyWords.Size = new System.Drawing.Size(83, 16);
-            this.radioBtnAutopagebyWords.TabIndex = 0;
-            this.radioBtnAutopagebyWords.Text = "按字数分页";
-            this.radioBtnAutopagebyWords.UseVisualStyleBackColor = true;
-            // 
-            // gboxParams
-            // 
-            this.gboxParams.Controls.Add(this.tboxAutopageParams);
-            this.gboxParams.Controls.Add(this.lblPageParams);
-            this.gboxParams.Location = new System.Drawing.Point(8, 299);
-            this.gboxParams.Name = "gboxParams";
-            this.gboxParams.Size = new System.Drawing.Size(531, 43);
-            this.gboxParams.TabIndex = 50;
-            this.gboxParams.TabStop = false;
-            this.gboxParams.Text = "分页参数";
-            // 
-            // tboxAutopageParams
-            // 
-            this.tboxAutopageParams.Location = new System.Drawing.Point(145, 12);
-            this.tboxAutopageParams.Name = "tboxAutopageParams";
-            this.tboxAutopageParams.Size = new System.Drawing.Size(380, 21);
-            this.tboxAutopageParams.TabIndex = 1;
-            // 
-            // lblPageParams
-            // 
-            this.lblPageParams.AutoSize = true;
-            this.lblPageParams.Location = new System.Drawing.Point(7, 17);
-            this.lblPageParams.Name = "lblPageParams";
-            this.lblPageParams.Size = new System.Drawing.Size(131, 12);
-            this.lblPageParams.TabIndex = 0;
-            this.lblPageParams.Text = "（图片数或字数）/页：";
-            // 
-            // gboxOtherOption
-            // 
-            this.gboxOtherOption.Controls.Add(this.btnClearPageSeparator);
-            this.gboxOtherOption.Controls.Add(this.btnResetEditorContent);
-            this.gboxOtherOption.Controls.Add(this.checkBoxClearFormat);
-            this.gboxOtherOption.Controls.Add(this.checkBoxOnlyImages);
-            this.gboxOtherOption.Location = new System.Drawing.Point(8, 348);
-            this.gboxOtherOption.Name = "gboxOtherOption";
-            this.gboxOtherOption.Size = new System.Drawing.Size(531, 45);
-            this.gboxOtherOption.TabIndex = 51;
-            this.gboxOtherOption.TabStop = false;
-            this.gboxOtherOption.Text = "其他选项";
-            // 
-            // btnClearPageSeparator
-            // 
-            this.btnClearPageSeparator.Location = new System.Drawing.Point(296, 16);
-            this.btnClearPageSeparator.Name = "btnClearPageSeparator";
-            this.btnClearPageSeparator.Size = new System.Drawing.Size(107, 23);
-            this.btnClearPageSeparator.TabIndex = 3;
-            this.btnClearPageSeparator.Text = "清除所有分页";
-            this.btnClearPageSeparator.UseVisualStyleBackColor = true;
-            this.btnClearPageSeparator.Click += new System.EventHandler(this.btnClearPageSeparator_Click);
-            // 
-            // btnResetEditorContent
-            // 
-            this.btnResetEditorContent.Location = new System.Drawing.Point(418, 16);
-            this.btnResetEditorContent.Name = "btnResetEditorContent";
-            this.btnResetEditorContent.Size = new System.Drawing.Size(107, 23);
-            this.btnResetEditorContent.TabIndex = 2;
-            this.btnResetEditorContent.Text = "重置编辑器内容";
-            this.btnResetEditorContent.UseVisualStyleBackColor = true;
-            this.btnResetEditorContent.Click += new System.EventHandler(this.btnResetContent_Click);
-            // 
-            // checkBoxClearFormat
-            // 
-            this.checkBoxClearFormat.AutoSize = true;
-            this.checkBoxClearFormat.Location = new System.Drawing.Point(140, 21);
-            this.checkBoxClearFormat.Name = "checkBoxClearFormat";
-            this.checkBoxClearFormat.Size = new System.Drawing.Size(72, 16);
-            this.checkBoxClearFormat.TabIndex = 1;
-            this.checkBoxClearFormat.Text = "去除空格";
-            this.checkBoxClearFormat.UseVisualStyleBackColor = true;
-            this.checkBoxClearFormat.CheckedChanged += new System.EventHandler(this.checkBoxClearFormat_CheckedChanged);
-            // 
-            // checkBoxOnlyImages
-            // 
-            this.checkBoxOnlyImages.AutoSize = true;
-            this.checkBoxOnlyImages.Location = new System.Drawing.Point(20, 20);
-            this.checkBoxOnlyImages.Name = "checkBoxOnlyImages";
-            this.checkBoxOnlyImages.Size = new System.Drawing.Size(84, 16);
-            this.checkBoxOnlyImages.TabIndex = 0;
-            this.checkBoxOnlyImages.Text = "只保留图片";
-            this.checkBoxOnlyImages.UseVisualStyleBackColor = true;
-            this.checkBoxOnlyImages.CheckedChanged += new System.EventHandler(this.checkBoxOnlyImages_CheckedChanged);
-            // 
-            // statusStripArceditBottom
-            // 
-            this.statusStripArceditBottom.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLblImgCount,
-            this.toolStripStatusLblWordsCount});
-            this.statusStripArceditBottom.Location = new System.Drawing.Point(0, 950);
-            this.statusStripArceditBottom.Name = "statusStripArceditBottom";
-            this.statusStripArceditBottom.Size = new System.Drawing.Size(950, 22);
-            this.statusStripArceditBottom.TabIndex = 52;
-            this.statusStripArceditBottom.Text = "statusStrip1";
-            // 
-            // toolStripStatusLblImgCount
-            // 
-            this.toolStripStatusLblImgCount.Name = "toolStripStatusLblImgCount";
-            this.toolStripStatusLblImgCount.Size = new System.Drawing.Size(83, 17);
-            this.toolStripStatusLblImgCount.Text = "文章图片数：0";
-            // 
-            // toolStripStatusLblWordsCount
-            // 
-            this.toolStripStatusLblWordsCount.Name = "toolStripStatusLblWordsCount";
-            this.toolStripStatusLblWordsCount.Size = new System.Drawing.Size(71, 17);
-            this.toolStripStatusLblWordsCount.Text = "文章字数：0";
             // 
             // listViewPubTypeinfo
             // 
@@ -767,11 +414,10 @@ namespace ArcEdit
             this.listViewPubTypeinfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewPubTypeinfo.FullRowSelect = true;
             this.listViewPubTypeinfo.GridLines = true;
-            this.listViewPubTypeinfo.Location = new System.Drawing.Point(2, 16);
-            this.listViewPubTypeinfo.Margin = new System.Windows.Forms.Padding(2);
+            this.listViewPubTypeinfo.Location = new System.Drawing.Point(3, 24);
             this.listViewPubTypeinfo.MultiSelect = false;
             this.listViewPubTypeinfo.Name = "listViewPubTypeinfo";
-            this.listViewPubTypeinfo.Size = new System.Drawing.Size(287, 124);
+            this.listViewPubTypeinfo.Size = new System.Drawing.Size(430, 186);
             this.listViewPubTypeinfo.TabIndex = 17;
             this.listViewPubTypeinfo.UseCompatibleStateImageBehavior = false;
             this.listViewPubTypeinfo.View = System.Windows.Forms.View.Details;
@@ -792,11 +438,351 @@ namespace ArcEdit
             this.pub_type_items.Text = "栏目文章数";
             this.pub_type_items.Width = 130;
             // 
+            // gboxArcEdit
+            // 
+            this.gboxArcEdit.Controls.Add(this.tboxArticleLitpicURL);
+            this.gboxArcEdit.Controls.Add(this.lblArticleLitpicURL);
+            this.gboxArcEdit.Controls.Add(this.tboxAticleTypename);
+            this.gboxArcEdit.Controls.Add(this.lblArticleTypename);
+            this.gboxArcEdit.Controls.Add(this.tboxArticleDescription);
+            this.gboxArcEdit.Controls.Add(this.lblArticleDescription);
+            this.gboxArcEdit.Controls.Add(this.tboxArticleKeywords);
+            this.gboxArcEdit.Controls.Add(this.lblArticleKeywords);
+            this.gboxArcEdit.Controls.Add(this.tboxArticleTitle);
+            this.gboxArcEdit.Controls.Add(this.lblArticleTitle);
+            this.gboxArcEdit.Controls.Add(this.btnPublishArticle);
+            this.gboxArcEdit.Controls.Add(this.btnSaveArticle);
+            this.gboxArcEdit.Controls.Add(this.label17);
+            this.gboxArcEdit.Location = new System.Drawing.Point(12, 12);
+            this.gboxArcEdit.Name = "gboxArcEdit";
+            this.gboxArcEdit.Size = new System.Drawing.Size(963, 336);
+            this.gboxArcEdit.TabIndex = 46;
+            this.gboxArcEdit.TabStop = false;
+            this.gboxArcEdit.Text = "编辑发布文章";
+            // 
+            // tboxArticleLitpicURL
+            // 
+            this.tboxArticleLitpicURL.Location = new System.Drawing.Point(116, 286);
+            this.tboxArticleLitpicURL.Name = "tboxArticleLitpicURL";
+            this.tboxArticleLitpicURL.Size = new System.Drawing.Size(836, 28);
+            this.tboxArticleLitpicURL.TabIndex = 36;
+            // 
+            // lblArticleLitpicURL
+            // 
+            this.lblArticleLitpicURL.AutoSize = true;
+            this.lblArticleLitpicURL.Location = new System.Drawing.Point(14, 290);
+            this.lblArticleLitpicURL.Name = "lblArticleLitpicURL";
+            this.lblArticleLitpicURL.Size = new System.Drawing.Size(98, 18);
+            this.lblArticleLitpicURL.TabIndex = 37;
+            this.lblArticleLitpicURL.Text = "缩略图URL:";
+            // 
+            // tboxAticleTypename
+            // 
+            this.tboxAticleTypename.Location = new System.Drawing.Point(116, 118);
+            this.tboxAticleTypename.Name = "tboxAticleTypename";
+            this.tboxAticleTypename.ReadOnly = true;
+            this.tboxAticleTypename.Size = new System.Drawing.Size(296, 28);
+            this.tboxAticleTypename.TabIndex = 30;
+            // 
+            // lblArticleTypename
+            // 
+            this.lblArticleTypename.AutoSize = true;
+            this.lblArticleTypename.Location = new System.Drawing.Point(14, 123);
+            this.lblArticleTypename.Name = "lblArticleTypename";
+            this.lblArticleTypename.Size = new System.Drawing.Size(89, 18);
+            this.lblArticleTypename.TabIndex = 31;
+            this.lblArticleTypename.Text = "采集分类:";
+            // 
+            // tboxArticleDescription
+            // 
+            this.tboxArticleDescription.Location = new System.Drawing.Point(116, 156);
+            this.tboxArticleDescription.Multiline = true;
+            this.tboxArticleDescription.Name = "tboxArticleDescription";
+            this.tboxArticleDescription.Size = new System.Drawing.Size(836, 120);
+            this.tboxArticleDescription.TabIndex = 28;
+            // 
+            // lblArticleDescription
+            // 
+            this.lblArticleDescription.AutoSize = true;
+            this.lblArticleDescription.Location = new System.Drawing.Point(14, 160);
+            this.lblArticleDescription.Name = "lblArticleDescription";
+            this.lblArticleDescription.Size = new System.Drawing.Size(89, 18);
+            this.lblArticleDescription.TabIndex = 29;
+            this.lblArticleDescription.Text = "文章概要:";
+            // 
+            // tboxArticleKeywords
+            // 
+            this.tboxArticleKeywords.Location = new System.Drawing.Point(560, 118);
+            this.tboxArticleKeywords.Name = "tboxArticleKeywords";
+            this.tboxArticleKeywords.Size = new System.Drawing.Size(394, 28);
+            this.tboxArticleKeywords.TabIndex = 26;
+            // 
+            // lblArticleKeywords
+            // 
+            this.lblArticleKeywords.AutoSize = true;
+            this.lblArticleKeywords.Location = new System.Drawing.Point(456, 123);
+            this.lblArticleKeywords.Name = "lblArticleKeywords";
+            this.lblArticleKeywords.Size = new System.Drawing.Size(71, 18);
+            this.lblArticleKeywords.TabIndex = 27;
+            this.lblArticleKeywords.Text = "关键词:";
+            // 
+            // tboxArticleTitle
+            // 
+            this.tboxArticleTitle.Location = new System.Drawing.Point(116, 80);
+            this.tboxArticleTitle.Name = "tboxArticleTitle";
+            this.tboxArticleTitle.Size = new System.Drawing.Size(836, 28);
+            this.tboxArticleTitle.TabIndex = 25;
+            // 
+            // lblArticleTitle
+            // 
+            this.lblArticleTitle.AutoSize = true;
+            this.lblArticleTitle.Location = new System.Drawing.Point(14, 84);
+            this.lblArticleTitle.Name = "lblArticleTitle";
+            this.lblArticleTitle.Size = new System.Drawing.Size(89, 18);
+            this.lblArticleTitle.TabIndex = 25;
+            this.lblArticleTitle.Text = "文章标题:";
+            // 
+            // btnPublishArticle
+            // 
+            this.btnPublishArticle.Location = new System.Drawing.Point(176, 32);
+            this.btnPublishArticle.Name = "btnPublishArticle";
+            this.btnPublishArticle.Size = new System.Drawing.Size(141, 32);
+            this.btnPublishArticle.TabIndex = 25;
+            this.btnPublishArticle.Text = "发布文章";
+            this.btnPublishArticle.UseVisualStyleBackColor = true;
+            // 
+            // btnSaveArticle
+            // 
+            this.btnSaveArticle.Location = new System.Drawing.Point(16, 32);
+            this.btnSaveArticle.Name = "btnSaveArticle";
+            this.btnSaveArticle.Size = new System.Drawing.Size(141, 32);
+            this.btnSaveArticle.TabIndex = 24;
+            this.btnSaveArticle.Text = "保存文章";
+            this.btnSaveArticle.UseVisualStyleBackColor = true;
+            this.btnSaveArticle.Click += new System.EventHandler(this.btnSaveArticle_Click);
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(-458, 26);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(89, 18);
+            this.label17.TabIndex = 22;
+            this.label17.Text = "搜索分类:";
+            // 
+            // gboxPageSpliter
+            // 
+            this.gboxPageSpliter.Controls.Add(this.radioBtnOriginPage);
+            this.gboxPageSpliter.Controls.Add(this.radioBtnAutopage);
+            this.gboxPageSpliter.Controls.Add(this.radioBtnHandpage);
+            this.gboxPageSpliter.Location = new System.Drawing.Point(12, 364);
+            this.gboxPageSpliter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxPageSpliter.Name = "gboxPageSpliter";
+            this.gboxPageSpliter.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxPageSpliter.Size = new System.Drawing.Size(414, 72);
+            this.gboxPageSpliter.TabIndex = 48;
+            this.gboxPageSpliter.TabStop = false;
+            this.gboxPageSpliter.Text = "添加分隔符";
+            // 
+            // radioBtnOriginPage
+            // 
+            this.radioBtnOriginPage.AutoSize = true;
+            this.radioBtnOriginPage.Location = new System.Drawing.Point(16, 27);
+            this.radioBtnOriginPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioBtnOriginPage.Name = "radioBtnOriginPage";
+            this.radioBtnOriginPage.Size = new System.Drawing.Size(105, 22);
+            this.radioBtnOriginPage.TabIndex = 2;
+            this.radioBtnOriginPage.TabStop = true;
+            this.radioBtnOriginPage.Text = "原始分页";
+            this.radioBtnOriginPage.UseVisualStyleBackColor = true;
+            this.radioBtnOriginPage.CheckedChanged += new System.EventHandler(this.radioBtnOriginPage_CheckedChanged);
+            // 
+            // radioBtnAutopage
+            // 
+            this.radioBtnAutopage.AutoSize = true;
+            this.radioBtnAutopage.Location = new System.Drawing.Point(284, 27);
+            this.radioBtnAutopage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioBtnAutopage.Name = "radioBtnAutopage";
+            this.radioBtnAutopage.Size = new System.Drawing.Size(105, 22);
+            this.radioBtnAutopage.TabIndex = 1;
+            this.radioBtnAutopage.TabStop = true;
+            this.radioBtnAutopage.Text = "自动分页";
+            this.radioBtnAutopage.UseVisualStyleBackColor = true;
+            this.radioBtnAutopage.CheckedChanged += new System.EventHandler(this.radioBtnAutopage_CheckedChanged);
+            // 
+            // radioBtnHandpage
+            // 
+            this.radioBtnHandpage.AutoSize = true;
+            this.radioBtnHandpage.Location = new System.Drawing.Point(150, 27);
+            this.radioBtnHandpage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioBtnHandpage.Name = "radioBtnHandpage";
+            this.radioBtnHandpage.Size = new System.Drawing.Size(105, 22);
+            this.radioBtnHandpage.TabIndex = 0;
+            this.radioBtnHandpage.TabStop = true;
+            this.radioBtnHandpage.Text = "手工分页";
+            this.radioBtnHandpage.UseVisualStyleBackColor = true;
+            this.radioBtnHandpage.CheckedChanged += new System.EventHandler(this.radioBtnHandpage_CheckedChanged);
+            // 
+            // gboxAutopageType
+            // 
+            this.gboxAutopageType.Controls.Add(this.radioBtnAutopagebyImages);
+            this.gboxAutopageType.Controls.Add(this.radioBtnAutopagebyWords);
+            this.gboxAutopageType.Location = new System.Drawing.Point(459, 364);
+            this.gboxAutopageType.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxAutopageType.Name = "gboxAutopageType";
+            this.gboxAutopageType.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxAutopageType.Size = new System.Drawing.Size(350, 72);
+            this.gboxAutopageType.TabIndex = 49;
+            this.gboxAutopageType.TabStop = false;
+            this.gboxAutopageType.Text = "自动分页类型";
+            // 
+            // radioBtnAutopagebyImages
+            // 
+            this.radioBtnAutopagebyImages.AutoSize = true;
+            this.radioBtnAutopagebyImages.Checked = true;
+            this.radioBtnAutopagebyImages.Location = new System.Drawing.Point(174, 27);
+            this.radioBtnAutopagebyImages.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioBtnAutopagebyImages.Name = "radioBtnAutopagebyImages";
+            this.radioBtnAutopagebyImages.Size = new System.Drawing.Size(141, 22);
+            this.radioBtnAutopagebyImages.TabIndex = 1;
+            this.radioBtnAutopagebyImages.TabStop = true;
+            this.radioBtnAutopagebyImages.Text = "按图片数分页";
+            this.radioBtnAutopagebyImages.UseVisualStyleBackColor = true;
+            // 
+            // radioBtnAutopagebyWords
+            // 
+            this.radioBtnAutopagebyWords.AutoSize = true;
+            this.radioBtnAutopagebyWords.Enabled = false;
+            this.radioBtnAutopagebyWords.Location = new System.Drawing.Point(12, 27);
+            this.radioBtnAutopagebyWords.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioBtnAutopagebyWords.Name = "radioBtnAutopagebyWords";
+            this.radioBtnAutopagebyWords.Size = new System.Drawing.Size(123, 22);
+            this.radioBtnAutopagebyWords.TabIndex = 0;
+            this.radioBtnAutopagebyWords.Text = "按字数分页";
+            this.radioBtnAutopagebyWords.UseVisualStyleBackColor = true;
+            // 
+            // gboxParams
+            // 
+            this.gboxParams.Controls.Add(this.tboxAutopageParams);
+            this.gboxParams.Controls.Add(this.lblPageParams);
+            this.gboxParams.Location = new System.Drawing.Point(12, 448);
+            this.gboxParams.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxParams.Name = "gboxParams";
+            this.gboxParams.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxParams.Size = new System.Drawing.Size(796, 64);
+            this.gboxParams.TabIndex = 50;
+            this.gboxParams.TabStop = false;
+            this.gboxParams.Text = "分页参数";
+            // 
+            // tboxAutopageParams
+            // 
+            this.tboxAutopageParams.Location = new System.Drawing.Point(218, 18);
+            this.tboxAutopageParams.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tboxAutopageParams.Name = "tboxAutopageParams";
+            this.tboxAutopageParams.Size = new System.Drawing.Size(568, 28);
+            this.tboxAutopageParams.TabIndex = 1;
+            // 
+            // lblPageParams
+            // 
+            this.lblPageParams.AutoSize = true;
+            this.lblPageParams.Location = new System.Drawing.Point(10, 26);
+            this.lblPageParams.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblPageParams.Name = "lblPageParams";
+            this.lblPageParams.Size = new System.Drawing.Size(197, 18);
+            this.lblPageParams.TabIndex = 0;
+            this.lblPageParams.Text = "（图片数或字数）/页：";
+            // 
+            // gboxOtherOption
+            // 
+            this.gboxOtherOption.Controls.Add(this.btnClearPageSeparator);
+            this.gboxOtherOption.Controls.Add(this.btnResetEditorContent);
+            this.gboxOtherOption.Controls.Add(this.checkBoxClearFormat);
+            this.gboxOtherOption.Controls.Add(this.checkBoxOnlyImages);
+            this.gboxOtherOption.Location = new System.Drawing.Point(12, 522);
+            this.gboxOtherOption.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxOtherOption.Name = "gboxOtherOption";
+            this.gboxOtherOption.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxOtherOption.Size = new System.Drawing.Size(796, 68);
+            this.gboxOtherOption.TabIndex = 51;
+            this.gboxOtherOption.TabStop = false;
+            this.gboxOtherOption.Text = "其他选项";
+            // 
+            // btnClearPageSeparator
+            // 
+            this.btnClearPageSeparator.Location = new System.Drawing.Point(444, 24);
+            this.btnClearPageSeparator.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnClearPageSeparator.Name = "btnClearPageSeparator";
+            this.btnClearPageSeparator.Size = new System.Drawing.Size(160, 34);
+            this.btnClearPageSeparator.TabIndex = 3;
+            this.btnClearPageSeparator.Text = "清除所有分页";
+            this.btnClearPageSeparator.UseVisualStyleBackColor = true;
+            this.btnClearPageSeparator.Click += new System.EventHandler(this.btnClearPageSeparator_Click);
+            // 
+            // btnResetEditorContent
+            // 
+            this.btnResetEditorContent.Location = new System.Drawing.Point(627, 24);
+            this.btnResetEditorContent.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnResetEditorContent.Name = "btnResetEditorContent";
+            this.btnResetEditorContent.Size = new System.Drawing.Size(160, 34);
+            this.btnResetEditorContent.TabIndex = 2;
+            this.btnResetEditorContent.Text = "重置编辑器内容";
+            this.btnResetEditorContent.UseVisualStyleBackColor = true;
+            this.btnResetEditorContent.Click += new System.EventHandler(this.btnResetContent_Click);
+            // 
+            // checkBoxClearFormat
+            // 
+            this.checkBoxClearFormat.AutoSize = true;
+            this.checkBoxClearFormat.Location = new System.Drawing.Point(210, 32);
+            this.checkBoxClearFormat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.checkBoxClearFormat.Name = "checkBoxClearFormat";
+            this.checkBoxClearFormat.Size = new System.Drawing.Size(106, 22);
+            this.checkBoxClearFormat.TabIndex = 1;
+            this.checkBoxClearFormat.Text = "去除空格";
+            this.checkBoxClearFormat.UseVisualStyleBackColor = true;
+            this.checkBoxClearFormat.CheckedChanged += new System.EventHandler(this.checkBoxClearFormat_CheckedChanged);
+            // 
+            // checkBoxOnlyImages
+            // 
+            this.checkBoxOnlyImages.AutoSize = true;
+            this.checkBoxOnlyImages.Location = new System.Drawing.Point(30, 30);
+            this.checkBoxOnlyImages.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.checkBoxOnlyImages.Name = "checkBoxOnlyImages";
+            this.checkBoxOnlyImages.Size = new System.Drawing.Size(124, 22);
+            this.checkBoxOnlyImages.TabIndex = 0;
+            this.checkBoxOnlyImages.Text = "只保留图片";
+            this.checkBoxOnlyImages.UseVisualStyleBackColor = true;
+            this.checkBoxOnlyImages.CheckedChanged += new System.EventHandler(this.checkBoxOnlyImages_CheckedChanged);
+            // 
+            // statusStripArceditBottom
+            // 
+            this.statusStripArceditBottom.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.statusStripArceditBottom.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLblImgCount,
+            this.toolStripStatusLblWordsCount});
+            this.statusStripArceditBottom.Location = new System.Drawing.Point(0, 1429);
+            this.statusStripArceditBottom.Name = "statusStripArceditBottom";
+            this.statusStripArceditBottom.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
+            this.statusStripArceditBottom.Size = new System.Drawing.Size(1425, 29);
+            this.statusStripArceditBottom.TabIndex = 52;
+            this.statusStripArceditBottom.Text = "statusStrip1";
+            // 
+            // toolStripStatusLblImgCount
+            // 
+            this.toolStripStatusLblImgCount.Name = "toolStripStatusLblImgCount";
+            this.toolStripStatusLblImgCount.Size = new System.Drawing.Size(129, 24);
+            this.toolStripStatusLblImgCount.Text = "文章图片数：0";
+            // 
+            // toolStripStatusLblWordsCount
+            // 
+            this.toolStripStatusLblWordsCount.Name = "toolStripStatusLblWordsCount";
+            this.toolStripStatusLblWordsCount.Size = new System.Drawing.Size(111, 24);
+            this.toolStripStatusLblWordsCount.Text = "文章字数：0";
+            // 
             // ArticleEditForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(950, 972);
+            this.ClientSize = new System.Drawing.Size(1425, 1458);
             this.Controls.Add(this.statusStripArceditBottom);
             this.Controls.Add(this.gboxOtherOption);
             this.Controls.Add(this.gboxParams);
@@ -809,7 +795,6 @@ namespace ArcEdit
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.gboxPubTypename);
             this.Controls.Add(this.gboxArcEdit);
-            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ArticleEditForm";
             this.Text = "ArticleEditForm";
             this.Load += new System.EventHandler(this.ArticleEditForm_Load);
