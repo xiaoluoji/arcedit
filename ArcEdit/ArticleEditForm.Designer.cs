@@ -61,10 +61,6 @@ namespace ArcEdit
             this.lblPubTypename = new System.Windows.Forms.Label();
             this.tboxPubTypename = new System.Windows.Forms.TextBox();
             this.gboxListViewPubtype = new System.Windows.Forms.GroupBox();
-            this.listViewPubTypeinfo = new ArcDB.ListViewNF();
-            this.pub_typeid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.pub_typename = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.pub_type_items = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.gboxArcEdit = new System.Windows.Forms.GroupBox();
             this.tboxArticleLitpicURL = new System.Windows.Forms.TextBox();
             this.lblArticleLitpicURL = new System.Windows.Forms.Label();
@@ -97,6 +93,10 @@ namespace ArcEdit
             this.statusStripArceditBottom = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLblImgCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLblWordsCount = new System.Windows.Forms.ToolStripStatusLabel();
+            this.listViewPubTypeinfo = new ArcDB.ListViewNF();
+            this.pub_typeid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.pub_typename = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.pub_type_items = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.gboxWebBrowser.SuspendLayout();
             this.gboxArcPics.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -351,6 +351,7 @@ namespace ArcEdit
             // 
             this.tboxPubTypeid.Location = new System.Drawing.Point(56, 27);
             this.tboxPubTypeid.Name = "tboxPubTypeid";
+            this.tboxPubTypeid.ReadOnly = true;
             this.tboxPubTypeid.Size = new System.Drawing.Size(94, 28);
             this.tboxPubTypeid.TabIndex = 14;
             // 
@@ -392,6 +393,7 @@ namespace ArcEdit
             // 
             this.tboxPubTypename.Location = new System.Drawing.Point(274, 27);
             this.tboxPubTypename.Name = "tboxPubTypename";
+            this.tboxPubTypename.ReadOnly = true;
             this.tboxPubTypename.Size = new System.Drawing.Size(140, 28);
             this.tboxPubTypename.TabIndex = 12;
             // 
@@ -404,39 +406,6 @@ namespace ArcEdit
             this.gboxListViewPubtype.TabIndex = 0;
             this.gboxListViewPubtype.TabStop = false;
             this.gboxListViewPubtype.Text = "发布分类";
-            // 
-            // listViewPubTypeinfo
-            // 
-            this.listViewPubTypeinfo.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.pub_typeid,
-            this.pub_typename,
-            this.pub_type_items});
-            this.listViewPubTypeinfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listViewPubTypeinfo.FullRowSelect = true;
-            this.listViewPubTypeinfo.GridLines = true;
-            this.listViewPubTypeinfo.Location = new System.Drawing.Point(3, 24);
-            this.listViewPubTypeinfo.MultiSelect = false;
-            this.listViewPubTypeinfo.Name = "listViewPubTypeinfo";
-            this.listViewPubTypeinfo.Size = new System.Drawing.Size(430, 186);
-            this.listViewPubTypeinfo.TabIndex = 17;
-            this.listViewPubTypeinfo.UseCompatibleStateImageBehavior = false;
-            this.listViewPubTypeinfo.View = System.Windows.Forms.View.Details;
-            this.listViewPubTypeinfo.SelectedIndexChanged += new System.EventHandler(this.listViewPubTypeinfo_SelectedIndexChanged);
-            // 
-            // pub_typeid
-            // 
-            this.pub_typeid.Text = "发布分类ID";
-            this.pub_typeid.Width = 120;
-            // 
-            // pub_typename
-            // 
-            this.pub_typename.Text = "发布分类名称";
-            this.pub_typename.Width = 130;
-            // 
-            // pub_type_items
-            // 
-            this.pub_type_items.Text = "栏目文章数";
-            this.pub_type_items.Width = 130;
             // 
             // gboxArcEdit
             // 
@@ -550,6 +519,7 @@ namespace ArcEdit
             this.btnPublishArticle.TabIndex = 25;
             this.btnPublishArticle.Text = "发布文章";
             this.btnPublishArticle.UseVisualStyleBackColor = true;
+            this.btnPublishArticle.Click += new System.EventHandler(this.btnPublishArticle_Click);
             // 
             // btnSaveArticle
             // 
@@ -778,6 +748,39 @@ namespace ArcEdit
             this.toolStripStatusLblWordsCount.Size = new System.Drawing.Size(111, 24);
             this.toolStripStatusLblWordsCount.Text = "文章字数：0";
             // 
+            // listViewPubTypeinfo
+            // 
+            this.listViewPubTypeinfo.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.pub_typeid,
+            this.pub_typename,
+            this.pub_type_items});
+            this.listViewPubTypeinfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewPubTypeinfo.FullRowSelect = true;
+            this.listViewPubTypeinfo.GridLines = true;
+            this.listViewPubTypeinfo.Location = new System.Drawing.Point(3, 24);
+            this.listViewPubTypeinfo.MultiSelect = false;
+            this.listViewPubTypeinfo.Name = "listViewPubTypeinfo";
+            this.listViewPubTypeinfo.Size = new System.Drawing.Size(430, 186);
+            this.listViewPubTypeinfo.TabIndex = 17;
+            this.listViewPubTypeinfo.UseCompatibleStateImageBehavior = false;
+            this.listViewPubTypeinfo.View = System.Windows.Forms.View.Details;
+            this.listViewPubTypeinfo.SelectedIndexChanged += new System.EventHandler(this.listViewPubTypeinfo_SelectedIndexChanged);
+            // 
+            // pub_typeid
+            // 
+            this.pub_typeid.Text = "发布分类ID";
+            this.pub_typeid.Width = 120;
+            // 
+            // pub_typename
+            // 
+            this.pub_typename.Text = "发布分类名称";
+            this.pub_typename.Width = 130;
+            // 
+            // pub_type_items
+            // 
+            this.pub_type_items.Text = "栏目文章数";
+            this.pub_type_items.Width = 130;
+            // 
             // ArticleEditForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -797,6 +800,8 @@ namespace ArcEdit
             this.Controls.Add(this.gboxArcEdit);
             this.Name = "ArticleEditForm";
             this.Text = "ArticleEditForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ArticleEditForm_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ArticleEditForm_FormClosed);
             this.Load += new System.EventHandler(this.ArticleEditForm_Load);
             this.gboxWebBrowser.ResumeLayout(false);
             this.gboxArcPics.ResumeLayout(false);

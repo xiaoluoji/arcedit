@@ -78,6 +78,7 @@ namespace ArcEdit
         private string _errorLogPath = Application.StartupPath + @"\errorLog\";                                    //错误日志目录
         private Configuration _sysConfig;                                                                                                   //sharpconfig对象
         private string _configFile;                                                                                                                //配置文件
+        private string _logFile;                                                                                                                     //错误日志文件
         private int _aid = 0;                                                                                                                           //文章在采集库中的ID
         private string _coConnString;                                                                                                          //采集数据库mysql连接配置参数
         private string _pubConnString;                                                                                                       //CMS数据库mysql连接配置参数
@@ -94,11 +95,10 @@ namespace ArcEdit
         private string _arcContent;                                                                                                              //从数据库中获取文章内容
         private string _arcTempContent;                                                                                                     //编辑中的文件内容
         private string _arcUsedbyPc;                                                                                                           //文章是否已发布
-        private int _arcCmsAid = 0;                                                                                                               //文章发布后对于在CMS中的文章ID
+        private long _arcCmsAid = 0;                                                                                                          //文章发布后对于在CMS中的文章ID
         private int _arcPubTypeid = 0;                                                                                                          //当前选中发布分类ID
         private string _arcPubTypename;                                                                                                    //当前选中发布分类名称
         private int _arcWordsCount = 0;                                                                                                     //文章内容文字数量
-        private string _pubFilterKeywords;
         private List<Dictionary<string, string>> _arcPicUrls;                                                                       //保存文章所有图片URL信息，每个元素的key为图片在arc_pics表中的ID 
         private Dictionary<string, Dictionary<string, Dictionary<string, string>>> _dicArcThumbs;           //保存文章所有缩略图信息      
         private Dictionary<string, Dictionary<string, string>> _dicArcPics;                                               //保存文章中所有的图片信息
@@ -120,6 +120,7 @@ namespace ArcEdit
         public ArticleEditForm(string coConnString, string pubConnString, int aid, string pubTablePrename, System.Windows.Forms.Form ParentForm)
         {
             _configFile = _RootPath + "config.ini";
+            _logFile = _errorLogPath + _aid.ToString() + ".txt";
             if (File.Exists(_configFile))
             {
                 _sysConfig = Configuration.LoadFromFile(_configFile);
@@ -154,6 +155,11 @@ namespace ArcEdit
             {
                 tboxPubTypeid.Text = _sysConfig["Editor"]["PubTypeid"].StringValue;
                 tboxPubTypename.Text = _sysConfig["Editor"]["PubTypename"].StringValue;
+                if (int.TryParse(tboxPubTypeid.Text,out _arcPubTypeid))
+                {
+                    _arcPubTypeid = int.Parse(tboxPubTypeid.Text);
+                }
+                _arcPubTypename = tboxPubTypename.Text;
             }
         }
 
@@ -179,6 +185,18 @@ namespace ArcEdit
             webBrowserArcContent.Url = new System.Uri(_RootPath + @"kindeditor\e.html", System.UriKind.Absolute);
             webBrowserArcContent.ObjectForScripting = this;
             downloadAllpic();
+        }
+
+        //ArticleEditForm 窗口将要关闭时
+        private void ArticleEditForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+        }
+
+        //ArticleEditForm 窗口关闭后
+        private void ArticleEditForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            saveArticle();
         }
 
         //当选中listViewPubTypeinfo中的分类项的时候，讲表单中CMS分类ID和CMS分类名称更新为选中的值
@@ -602,7 +620,7 @@ namespace ArcEdit
         }
 
         //将编辑过的内容保存到采集数据库中
-        private void saveArticle()
+        private bool saveArticle()
         {
             //string sql = "select type_id,   pic_count,    litpic,    title,    source_site,   keywords,   description,   content from arc_contents where aid = '" + _aid.ToString() + "'";
             setVarValue();
@@ -621,11 +639,16 @@ namespace ArcEdit
                 sql = sql + ",keywords='" +mySqlDB.EscapeString(_arcKeywords) + "'";
                 sql = sql + ",is_edited='yes'";
                 sql = sql + ",edit_date='" + currentTime.ToString() + "'";
+                if (_arcPubTypeid!=0)
+                {
+                    sql = sql + ",cms_typeid='" + _arcPubTypeid.ToString() + "'";
+                    sql = sql + ",cms_typename='" + _arcPubTypename + "'";
+                }
                 sql = sql + " where aid='" + _aid.ToString() + "'";
                 counts = myCoDB.executeDMLSQL(sql, ref sResult);
                 if (sResult==mySqlDB.SUCCESS)
                 {
-                    MessageBox.Show("保存成功！");
+                    //MessageBox.Show("保存成功！");
                     if (_arcLitpicID!=0) //如果修改了当前文章的缩略图，将arc_pics表中的文章对应的图片信息
                     {
                         sql = "update arc_pics set is_thumb='no' where is_thumb='yes' and  aid='" + _aid.ToString() + "'";
@@ -651,19 +674,52 @@ namespace ArcEdit
                 {
                     MessageBox.Show("保存文章出错！请检查错误日志");
                     saveErrorLog(logFile, sResult); //保存错误日志
+                    return false;
                 }
             }
             else
             {
                 MessageBox.Show("请检查表单数据，确保文章标题，缩略图URL，文章内容不能为空！");
+                return false;
             }
-
+            return true;
         }
 
         //点击保存按钮
         private void btnSaveArticle_Click(object sender, EventArgs e)
         {
-            saveArticle();
+            if (saveArticle())
+            {
+                MessageBox.Show("保存成功！");
+            }
+        }
+        //点击发布按钮
+        private void btnPublishArticle_Click(object sender, EventArgs e)
+        {
+            if (_arcPubTypeid==0) //判断是否已选择发布分类
+            {
+                MessageBox.Show("请选择发布分类后再发布！");
+            }
+            else
+            {
+                _arcTempContent = ArcTool.ClearDiv(_arcTempContent); //发布文章前将文章内容中的div标签清除
+                if (saveArticle()) //判断是否正确保存文章
+                {
+                    ArticlePublish_Akcms articlePublish = new ArticlePublish_Akcms(_coConnString, _pubConnString, _pubTablePrename,aid:_aid);
+                    articlePublish.ProcessPublishArticles();  //执行发布操作
+                    _arcCmsAid = articlePublish.LastExportedCmsid;
+                    if (_arcCmsAid==-1)
+                    {
+                        string errorMessage = "文章发布失败！文章ID为" + _aid.ToString();
+                        saveErrorLog(_logFile, errorMessage);
+                    }
+                    else
+                    {
+                        btnPublishArticle.Enabled = false;  //成功发布文章后，禁用发布文章按钮，以免重复发布文章
+                        MessageBox.Show("成功发布文章！文章在CMS中的ID为：" + _arcCmsAid.ToString());
+                    }
+                }
+            }
         }
 
         #endregion 文章内容处理完成
@@ -1281,6 +1337,8 @@ namespace ArcEdit
                 filestream = new FileStream(savepath, FileMode.OpenOrCreate);
             }
         }
+
+
 
         #endregion
 

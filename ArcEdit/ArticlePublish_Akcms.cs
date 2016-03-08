@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Threading;
 using SharpMysql;
+using System.Text.RegularExpressions;
 
 
 namespace ArcEdit
@@ -14,16 +15,15 @@ namespace ArcEdit
     {
         #region Fields
 
-        private int _pubID;                                                            //发布规则配置ID
         private string _coConnString;                                           //采集数据库连接配置
         private string _pubConnString;                                        //发布数据库连接配置
         private string _pubTablePrename;                                   //发布数据库表前缀
+        private int _aid;                                                                //发布文章ID，如果是人工发布，则需要指定文章ID
         private int _coTypeid;                                                      //采集文章分类
         private int _pubTypeid;                                                    //发布文章分类
-        private string[] _pubFilterKeywords;                                //发布过滤关键词
         private int _pubNums;                                                     //发布数量
-        private string _randomDateStart;                                    //随机发布时间的随机区间开始
-        private string _randomDateStop;                                    //随机发布时间的随机区间结束
+        private string _randomDateStart;                                    //随机发布时间的随机区间开始，如果参数为空则发布日期使用当前日期
+        private string _randomDateStop;                                    //随机发布时间的随机区间结束，
         private bool _isRecordError;                                           //是否开启错误记录
         private CancellationTokenSource _cancelTokenSource;  //用来获取取消事件的对象
         private string _pubState = "";                                         //保存当前采集状态
@@ -37,15 +37,12 @@ namespace ArcEdit
         #endregion
 
         #region Constructors
-        public ArticlePublish_Akcms(int pubID,string coConnString,string pubConnString,string pubTablePrename,int coTypeid,int pubTypeid,int pubNums,string[]pubFilterKeywords,string randomDateStart,string randomDateStop)
+        public ArticlePublish_Akcms(string coConnString,string pubConnString,string pubTablePrename, int pubNums=0, string randomDateStart="",string randomDateStop="",int aid=0)
         {
-            _pubID = pubID;
             _coConnString = coConnString;
             _pubConnString = pubConnString;
             _pubTablePrename = pubTablePrename;
-            _coTypeid = coTypeid;
-            _pubTypeid = pubTypeid;
-            _pubFilterKeywords = pubFilterKeywords;
+            _aid = aid;
             _pubNums = pubNums;
             _randomDateStart = randomDateStart;
             _randomDateStop = randomDateStop;
@@ -58,11 +55,6 @@ namespace ArcEdit
 
         #region Properties
 
-        //当前发布ID
-        public int PubID
-        {
-            get { return _pubID; }
-        }
         //采集分类ID
         public int CoTypeID
         {
@@ -171,27 +163,7 @@ namespace ArcEdit
             }
         }
 
-        //查寻符合发布条件的文章总数，根据文章总数随机一个从1到总数的数，作为获取一条记录的起始位置
-        private int getRandomStartPosition(string sql)
-        {
-            int startPosition = 0;
-            int recordCounts = 0;
-            List<Dictionary<string, object>> dbResult;
-            mySqlDB myDB = new mySqlDB(_coConnString);
-            string sResult = "";
-            int counts = 0;
-            dbResult = myDB.GetRecords(sql, ref sResult, ref counts);
-            if (sResult == mySqlDB.SUCCESS && counts > 0)
-            {
-                recordCounts=int.Parse(dbResult[0]["count(aid)"].ToString());
-                if (recordCounts!=0)
-                {
-                    Random rnd = new Random();
-                    startPosition = rnd.Next(1, recordCounts);
-                }
-            }
-            return startPosition;
-        }
+
         //随机获取一条符合发布条件的文章记录
         private Dictionary<string,object> getOneRecord()
         {
@@ -199,29 +171,17 @@ namespace ArcEdit
             mySqlDB myDB = new mySqlDB(_coConnString);
             string sResult = "";
             int counts = 0;
-            string sql = "select aid,litpic,title,source_site,description,content from arc_contents where type_id='" + _coTypeid.ToString() + "' and usedby_pc='no'";
-            string countSql = "select count(aid) from arc_contents where type_id='" + _coTypeid.ToString() + "' and usedby_pc='no'";
-            if (_pubFilterKeywords.Length>0)
+            //查寻符合发布条件的文章记录，满足条件必须包括 is_edited字段为yes, usedby_pc字段为no, cms_typeid字段不能为null, 如果传入参数aid，则查寻指定aid的文章
+            string sql = "select aid,litpic,title,type_id,cms_typeid,source_site,description,keywords,content from arc_contents where is_edited='yes' and usedby_pc='no' and cms_typeid<>'null'";
+            if (_aid!=0)
             {
-                sql = sql + " and (title like '%" + _pubFilterKeywords[0] + "%'";
-                countSql = countSql + " and (title like '%" + _pubFilterKeywords[0] + "%'";
-                for (int i = 1; i < _pubFilterKeywords.Length; i++)
-                {
-                    sql = sql + " or title like '%" + _pubFilterKeywords[i] + "%'";
-                    countSql = countSql + " or title like '%" + _pubFilterKeywords[i] + "%'";
-                }
-                sql = sql + ")";
-                countSql = countSql + ")";
-            }
-            int startPosition = getRandomStartPosition(countSql);
-            if (startPosition!=0)
-            {
-                sql = sql + " order by aid limit "+startPosition.ToString()+",1";
+                sql = sql + " and aid='" + _aid.ToString() + "'";
             }
             else
             {
                 sql = sql + " order by aid limit 1";
             }
+
             dbResult = myDB.GetRecords(sql, ref sResult, ref counts);
             if (sResult==mySqlDB.SUCCESS && counts>0)
             {
@@ -232,19 +192,25 @@ namespace ArcEdit
                 if (sResult!=mySqlDB.SUCCESS)
                 {
                     Exception ex = new Exception(sResult);
-                    ex.Data.Add("错误信息", "从指定采集分类中获取未发布文章错误");
-                    ex.Data.Add("采集分类ID", _coTypeid);
+                    ex.Data.Add("错误信息", "获取未发布文章错误");
                     _pubExceptions.Add(ex);
                 }
                 if (counts==0)
                 {
                     Exception ex = new Exception(sResult);
-                    ex.Data.Add("提示信息", "指定采集分类中已没有可发布的文章");
-                    ex.Data.Add("采集分类ID", _coTypeid);
+                    ex.Data.Add("提示信息", "没有可发布的文章");
                     _cancelException = ex;
                 }
                 return null;
             }
+        }
+
+        //处理文章分页
+        private List<string> getPageContent(string arcContent)
+        {
+            Regex regSplit = new Regex("<hr.*?class=[^>]*>");
+            string[] pageContent = regSplit.Split(arcContent);
+            return pageContent.ToList();
         }
 
         //导出一篇文章到CMS中
@@ -256,12 +222,33 @@ namespace ArcEdit
             string litpic = coArticle["litpic"].ToString();
             string sourceSite = coArticle["source_site"].ToString();
             string content = coArticle["content"].ToString();
+            List<string> pageContent = new List<string>();
+            Regex regSplit = new Regex("<hr.*?class=[^>]*>");
+            if (regSplit.IsMatch(content))
+            {
+                pageContent = getPageContent(content);
+            }
+            else
+            {
+                pageContent.Add(content);
+            }
+            string keywords = coArticle["keywords"].ToString();
             string description = coArticle["description"].ToString();
             string url = "";
             string status = "99";
             string sysadd = "1";
-            string username = "妖妖";
-            long pubDateUnixtime = getRandomPubDate();
+            string username = "admin";
+            //获取发布时间
+            long pubDateUnixtime = 0;
+            if (_randomDateStart!="" && _randomDateStop!="")
+            {
+                pubDateUnixtime = getRandomPubDate();
+            }
+            else
+            {
+                DateTime currentTime = DateTime.Now;
+                pubDateUnixtime = getUnixTime(currentTime);
+            }
             //将文章信息插入到news表中
             mySqlDB pubMyDB = new mySqlDB(_pubConnString);
             string sResult = "";
@@ -332,7 +319,7 @@ namespace ArcEdit
             }
             return true;
         }
-
+        
         //成功发布一篇文章后，更新采集文章库中对应文章的信息
         private bool updateCoArticle(long aid, long cmsAid)
         {
@@ -368,13 +355,16 @@ namespace ArcEdit
         {
             _pubState = "发布文章";
             _exportedArticleNums = 0;
+            if (_aid != 0)
+            {
+                _pubNums = 1;
+            }
             CancellationToken forCancelToken = _cancelTokenSource.Token;
             for (int i = 0; i < _pubNums; i++)
             {
                 if (forCancelToken.IsCancellationRequested)
                 {
                     Exception ex = new Exception("取消发布文章");
-                    ex.Data.Add("发布规则ID", _pubID);
                     _cancelException = ex;
                     break;
                 }
@@ -384,6 +374,8 @@ namespace ArcEdit
                     long cmsAid=-1;
                     bool isCorrectExported;
                     long aid = long.Parse(oneArticle["aid"].ToString());
+                    _coTypeid = int.Parse(oneArticle["type_id"].ToString());
+                    _pubTypeid = int.Parse(oneArticle["cms_typeid"].ToString());
                     isCorrectExported = exportOneRecord(oneArticle, ref  cmsAid);
                     if (isCorrectExported)
                     {
