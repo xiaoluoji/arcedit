@@ -8,7 +8,7 @@ using System.Threading;
 using SharpMysql;
 
 
-namespace ArcDB
+namespace ArcEdit
 {
     class ArticlePublish
     {

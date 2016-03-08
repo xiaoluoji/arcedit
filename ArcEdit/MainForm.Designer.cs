@@ -31,12 +31,14 @@
             this.tabctrMainform = new System.Windows.Forms.TabControl();
             this.tabPageArcedit = new System.Windows.Forms.TabPage();
             this.gboxArcList = new System.Windows.Forms.GroupBox();
+            this.checkBoxOnlyUnedited = new System.Windows.Forms.CheckBox();
             this.tboxDisplayArcCount = new System.Windows.Forms.TextBox();
             this.lblDisplayArcCount = new System.Windows.Forms.Label();
             this.btnSearchArcTitle = new System.Windows.Forms.Button();
             this.listViewArticles = new ArcDB.ListViewNF();
             this.arc_aid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.arc_pic_counts = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.arc_is_edited = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.arc_title = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tboxSearchArcTitle = new System.Windows.Forms.TextBox();
             this.lblSearchArcTitle = new System.Windows.Forms.Label();
@@ -95,7 +97,7 @@
             this.tabctrMainform.Location = new System.Drawing.Point(0, 0);
             this.tabctrMainform.Name = "tabctrMainform";
             this.tabctrMainform.SelectedIndex = 0;
-            this.tabctrMainform.Size = new System.Drawing.Size(1029, 968);
+            this.tabctrMainform.Size = new System.Drawing.Size(1178, 968);
             this.tabctrMainform.TabIndex = 0;
             // 
             // tabPageArcedit
@@ -105,13 +107,14 @@
             this.tabPageArcedit.Location = new System.Drawing.Point(4, 28);
             this.tabPageArcedit.Name = "tabPageArcedit";
             this.tabPageArcedit.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageArcedit.Size = new System.Drawing.Size(1021, 936);
+            this.tabPageArcedit.Size = new System.Drawing.Size(1170, 936);
             this.tabPageArcedit.TabIndex = 0;
             this.tabPageArcedit.Text = "内容编辑发布";
             this.tabPageArcedit.UseVisualStyleBackColor = true;
             // 
             // gboxArcList
             // 
+            this.gboxArcList.Controls.Add(this.checkBoxOnlyUnedited);
             this.gboxArcList.Controls.Add(this.tboxDisplayArcCount);
             this.gboxArcList.Controls.Add(this.lblDisplayArcCount);
             this.gboxArcList.Controls.Add(this.btnSearchArcTitle);
@@ -120,14 +123,25 @@
             this.gboxArcList.Controls.Add(this.lblSearchArcTitle);
             this.gboxArcList.Location = new System.Drawing.Point(377, 6);
             this.gboxArcList.Name = "gboxArcList";
-            this.gboxArcList.Size = new System.Drawing.Size(636, 911);
+            this.gboxArcList.Size = new System.Drawing.Size(785, 911);
             this.gboxArcList.TabIndex = 1;
             this.gboxArcList.TabStop = false;
             this.gboxArcList.Text = "选择文章";
             // 
+            // checkBoxOnlyUnedited
+            // 
+            this.checkBoxOnlyUnedited.AutoSize = true;
+            this.checkBoxOnlyUnedited.Location = new System.Drawing.Point(9, 28);
+            this.checkBoxOnlyUnedited.Name = "checkBoxOnlyUnedited";
+            this.checkBoxOnlyUnedited.Size = new System.Drawing.Size(178, 22);
+            this.checkBoxOnlyUnedited.TabIndex = 25;
+            this.checkBoxOnlyUnedited.Text = "只显示未编辑文章";
+            this.checkBoxOnlyUnedited.UseVisualStyleBackColor = true;
+            this.checkBoxOnlyUnedited.CheckedChanged += new System.EventHandler(this.checkBoxOnlyUnedited_CheckedChanged);
+            // 
             // tboxDisplayArcCount
             // 
-            this.tboxDisplayArcCount.Location = new System.Drawing.Point(412, 19);
+            this.tboxDisplayArcCount.Location = new System.Drawing.Point(343, 22);
             this.tboxDisplayArcCount.Name = "tboxDisplayArcCount";
             this.tboxDisplayArcCount.Size = new System.Drawing.Size(218, 28);
             this.tboxDisplayArcCount.TabIndex = 21;
@@ -136,7 +150,7 @@
             // lblDisplayArcCount
             // 
             this.lblDisplayArcCount.AutoSize = true;
-            this.lblDisplayArcCount.Location = new System.Drawing.Point(278, 24);
+            this.lblDisplayArcCount.Location = new System.Drawing.Point(212, 28);
             this.lblDisplayArcCount.Name = "lblDisplayArcCount";
             this.lblDisplayArcCount.Size = new System.Drawing.Size(125, 18);
             this.lblDisplayArcCount.TabIndex = 24;
@@ -144,7 +158,7 @@
             // 
             // btnSearchArcTitle
             // 
-            this.btnSearchArcTitle.Location = new System.Drawing.Point(489, 58);
+            this.btnSearchArcTitle.Location = new System.Drawing.Point(638, 61);
             this.btnSearchArcTitle.Name = "btnSearchArcTitle";
             this.btnSearchArcTitle.Size = new System.Drawing.Size(141, 31);
             this.btnSearchArcTitle.TabIndex = 23;
@@ -157,13 +171,14 @@
             this.listViewArticles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.arc_aid,
             this.arc_pic_counts,
+            this.arc_is_edited,
             this.arc_title});
             this.listViewArticles.FullRowSelect = true;
             this.listViewArticles.GridLines = true;
             this.listViewArticles.Location = new System.Drawing.Point(6, 109);
             this.listViewArticles.MultiSelect = false;
             this.listViewArticles.Name = "listViewArticles";
-            this.listViewArticles.Size = new System.Drawing.Size(624, 796);
+            this.listViewArticles.Size = new System.Drawing.Size(773, 796);
             this.listViewArticles.TabIndex = 21;
             this.listViewArticles.UseCompatibleStateImageBehavior = false;
             this.listViewArticles.View = System.Windows.Forms.View.Details;
@@ -179,14 +194,19 @@
             this.arc_pic_counts.Text = "图片数";
             this.arc_pic_counts.Width = 80;
             // 
+            // arc_is_edited
+            // 
+            this.arc_is_edited.Text = "是否已编辑";
+            this.arc_is_edited.Width = 110;
+            // 
             // arc_title
             // 
             this.arc_title.Text = "文章标题";
-            this.arc_title.Width = 450;
+            this.arc_title.Width = 500;
             // 
             // tboxSearchArcTitle
             // 
-            this.tboxSearchArcTitle.Location = new System.Drawing.Point(6, 61);
+            this.tboxSearchArcTitle.Location = new System.Drawing.Point(153, 64);
             this.tboxSearchArcTitle.Name = "tboxSearchArcTitle";
             this.tboxSearchArcTitle.Size = new System.Drawing.Size(477, 28);
             this.tboxSearchArcTitle.TabIndex = 22;
@@ -194,7 +214,7 @@
             // lblSearchArcTitle
             // 
             this.lblSearchArcTitle.AutoSize = true;
-            this.lblSearchArcTitle.Location = new System.Drawing.Point(6, 32);
+            this.lblSearchArcTitle.Location = new System.Drawing.Point(6, 69);
             this.lblSearchArcTitle.Name = "lblSearchArcTitle";
             this.lblSearchArcTitle.Size = new System.Drawing.Size(125, 18);
             this.lblSearchArcTitle.TabIndex = 21;
@@ -279,7 +299,7 @@
             this.tabPageSysconfig.Location = new System.Drawing.Point(4, 28);
             this.tabPageSysconfig.Name = "tabPageSysconfig";
             this.tabPageSysconfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSysconfig.Size = new System.Drawing.Size(1021, 936);
+            this.tabPageSysconfig.Size = new System.Drawing.Size(1170, 936);
             this.tabPageSysconfig.TabIndex = 1;
             this.tabPageSysconfig.Text = "系统配置";
             this.tabPageSysconfig.UseVisualStyleBackColor = true;
@@ -562,7 +582,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1029, 968);
+            this.ClientSize = new System.Drawing.Size(1178, 968);
             this.Controls.Add(this.tabctrMainform);
             this.Name = "MainForm";
             this.Text = "文章编辑";
@@ -636,6 +656,8 @@
         private System.Windows.Forms.TextBox tboxDisplayArcCount;
         private System.Windows.Forms.Label lblDisplayArcCount;
         private System.Windows.Forms.ColumnHeader arc_pic_counts;
+        private System.Windows.Forms.ColumnHeader arc_is_edited;
+        private System.Windows.Forms.CheckBox checkBoxOnlyUnedited;
     }
 }
 

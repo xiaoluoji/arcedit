@@ -619,6 +619,7 @@ namespace ArcEdit
                 sql = sql + ",content='" + mySqlDB.EscapeString(_arcTempContent) + "'";
                 sql = sql + ",description='" + mySqlDB.EscapeString(_arcDescription) + "'";
                 sql = sql + ",keywords='" +mySqlDB.EscapeString(_arcKeywords) + "'";
+                sql = sql + ",is_edited='yes'";
                 sql = sql + ",edit_date='" + currentTime.ToString() + "'";
                 sql = sql + " where aid='" + _aid.ToString() + "'";
                 counts = myCoDB.executeDMLSQL(sql, ref sResult);
@@ -1280,10 +1281,6 @@ namespace ArcEdit
                 filestream = new FileStream(savepath, FileMode.OpenOrCreate);
             }
         }
-
-
-
-
 
         #endregion
 

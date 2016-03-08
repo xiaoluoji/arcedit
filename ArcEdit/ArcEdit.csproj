@@ -80,7 +80,8 @@
     <Compile Include="ArticleEditForm.Designer.cs">
       <DependentUpon>ArticleEditForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ArticlePublish.cs" />
+    <Compile Include="ArticlePublish_Akcms.cs" />
+    <Compile Include="ArticlePublish_Phpcms.cs" />
     <Compile Include="ListViewNF.cs">
       <SubType>Component</SubType>
     </Compile>

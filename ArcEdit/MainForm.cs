@@ -188,6 +188,26 @@ namespace ArcEdit
             }
         }
 
+        //只显示未编辑checkbox控件选中状态事件触发
+        private void checkBoxOnlyUnedited_CheckedChanged(object sender, EventArgs e)
+        {
+            string searchArcTitle = tboxSearchArcTitle.Text;
+            int displayCount = 0;
+            if (int.TryParse(tboxDisplayArcCount.Text,out displayCount))
+            {
+                displayCount = int.Parse(tboxDisplayArcCount.Text);
+            }
+            if (checkBoxOnlyUnedited.Checked)
+            {
+                    displayArticles(_selectCoTypeID, searchArcTitle, displayCount,true);
+            }
+            else
+            {
+                displayArticles(_selectCoTypeID, searchArcTitle, displayCount,false);
+            }
+
+        }
+
         //采集分类选择项改变事件触发
         private void listViewCoTypeinfo_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -244,6 +264,7 @@ namespace ArcEdit
             }
 
         }
+
 
         private void ArticleEditModify_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -303,14 +324,18 @@ namespace ArcEdit
 
 
         #region 获取文章内容
-        private void displayArticles(int typeID, string searchArcTitle = "", int displayCount = 0)
+        private void displayArticles(int typeID, string searchArcTitle = "", int displayCount = 0,bool onlyUnEdited=false)
         {
             if (typeID!=0)
             {
                 mySqlDB myDB = new mySqlDB(_coConnString);
                 string sResult = "";
                 int counts = 0;
-                string sql = "select aid,pic_count,title from arc_contents where usedby_pc='no' and  type_id='" + typeID.ToString() + "'";
+                string sql = "select aid,pic_count,is_edited,title from arc_contents where usedby_pc='no' and  type_id='" + typeID.ToString() + "'";
+                if (onlyUnEdited)
+                {
+                    sql = sql + " and is_edited='no'";
+                }
                 if (searchArcTitle != "")
                 {
                     sql = sql + " and title like '%" + searchArcTitle + "%'";
@@ -386,6 +411,7 @@ namespace ArcEdit
                 displayArticles(_selectCoTypeID, tboxSearchArcTitle.Text, displayArcCount);
             }
         }
+
 
     }
 }
