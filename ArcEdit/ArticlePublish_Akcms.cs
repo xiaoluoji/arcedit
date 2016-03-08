@@ -37,7 +37,7 @@ namespace ArcEdit
         #endregion
 
         #region Constructors
-        public ArticlePublish(int pubID,string coConnString,string pubConnString,string pubTablePrename,int coTypeid,int pubTypeid,int pubNums,string[]pubFilterKeywords,string randomDateStart,string randomDateStop)
+        public ArticlePublish_Akcms(int pubID,string coConnString,string pubConnString,string pubTablePrename,int coTypeid,int pubTypeid,int pubNums,string[]pubFilterKeywords,string randomDateStart,string randomDateStop)
         {
             _pubID = pubID;
             _coConnString = coConnString;
