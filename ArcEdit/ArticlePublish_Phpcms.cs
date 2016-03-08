@@ -10,7 +10,7 @@ using SharpMysql;
 
 namespace ArcEdit
 {
-    class ArticlePublish
+    class ArticlePublish_Phpcms
     {
         #region Fields
 
