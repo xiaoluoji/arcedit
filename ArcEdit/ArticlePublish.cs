@@ -18,6 +18,7 @@ namespace ArcEdit
         private string _coConnString;                                           //采集数据库连接配置
         private string _pubConnString;                                        //发布数据库连接配置
         private string _pubTablePrename;                                   //发布数据库表前缀
+        private string _cmsType;                                                  //发布CMS类型
         private int _aid;                                                                //发布文章ID，如果是人工发布，则需要指定文章ID
         private int _coTypeid;                                                      //采集文章分类
         private int _pubTypeid;                                                    //发布文章分类
@@ -37,11 +38,12 @@ namespace ArcEdit
         #endregion
 
         #region Constructors
-        public ArticlePublish(string coConnString,string pubConnString,string pubTablePrename, int pubNums=0, string randomDateStart="",string randomDateStop="",int aid=0)
+        public ArticlePublish(string coConnString,string pubConnString,string pubTablePrename, string cmsType,int pubNums=0, string randomDateStart="",string randomDateStop="",int aid=0)
         {
             _coConnString = coConnString;
             _pubConnString = pubConnString;
             _pubTablePrename = pubTablePrename;
+            _cmsType = cmsType;
             _aid = aid;
             _pubNums = pubNums;
             _randomDateStart = randomDateStart;
@@ -217,30 +219,23 @@ namespace ArcEdit
         private bool exportOneRecord(Dictionary<string, object> coArticle,ref long cmsAid)
         {
             cmsAid = -1;                            //news表中插入记录后的ID值
-            string typeid = "0";
             string title = coArticle["title"].ToString();
             string litpic = coArticle["litpic"].ToString();
             string sourceSite = coArticle["source_site"].ToString();
             string content = coArticle["content"].ToString();
+            string keywords = coArticle["keywords"].ToString();
+            string description = coArticle["description"].ToString();
+            string username = "admin";
             List<string> pageContent = new List<string>();
             Regex regSplit = new Regex("<hr.*?class=[^>]*>");
+            //获取文章内容字段，处理文章分页信息
             if (regSplit.IsMatch(content))
             {
                 pageContent = getPageContent(content);
             }
-            else
-            {
-                pageContent.Add(content);
-            }
-            string keywords = coArticle["keywords"].ToString();
-            string description = coArticle["description"].ToString();
-            string url = "";
-            string status = "99";
-            string sysadd = "1";
-            string username = "admin";
             //获取发布时间
             long pubDateUnixtime = 0;
-            if (_randomDateStart!="" && _randomDateStop!="")
+            if (_randomDateStart != "" && _randomDateStop != "")
             {
                 pubDateUnixtime = getRandomPubDate();
             }
@@ -249,74 +244,178 @@ namespace ArcEdit
                 DateTime currentTime = DateTime.Now;
                 pubDateUnixtime = getUnixTime(currentTime);
             }
-            //将文章信息插入到news表中
+
+            //创建mysql连接对象
             mySqlDB pubMyDB = new mySqlDB(_pubConnString);
             string sResult = "";
             int counts = 0;
-            string sql = "insert into " + _pubTablePrename + "_news(catid,typeid,title,thumb,description,url,status,sysadd,username,inputtime,updatetime)";
-            sql = sql + " values ('" + _pubTypeid + "'";
-            sql = sql + ",'" + typeid + "'";
-            sql = sql + ",'" + mySqlDB.EscapeString(title) + "'";
-            sql = sql + ",'" + litpic + "'";
-            sql = sql + ",'" + mySqlDB.EscapeString(description) + "'";
-            sql = sql + ",'" + url + "'";
-            sql = sql + ",'" + status + "'";
-            sql = sql + ",'" + sysadd + "'";
-            sql = sql + ",'" + username + "'";
-            sql = sql + ",'" + pubDateUnixtime + "'";
-            sql = sql + ",'" + pubDateUnixtime + "')";
-            counts = pubMyDB.executeDMLSQL(sql, ref sResult);
-            if (sResult==mySqlDB.SUCCESS && counts>0)
+
+            //如果发布CMS为phpcms
+            if (_cmsType=="phpcms")
             {
-                cmsAid = pubMyDB.LastInsertedId;
+                string url = "";
+                string status = "99";
+                string sysadd = "1";
+                string typeid = "0";
+                if (keywords!="")
+                {
+                    keywords= keywords.Replace(",", " ");
+                }
+                //将文章信息插入到news表中
+                string sql = "insert into " + _pubTablePrename + "_news(catid,typeid,title,thumb,keywords,description,url,status,sysadd,username,inputtime,updatetime)";
+                sql = sql + " values ('" + _pubTypeid + "'";
+                sql = sql + ",'" + typeid + "'";
+                sql = sql + ",'" + mySqlDB.EscapeString(title) + "'";
+                sql = sql + ",'" + litpic + "'";
+                sql = sql + ",'" + mySqlDB.EscapeString(keywords) + "'";
+                sql = sql + ",'" + mySqlDB.EscapeString(description) + "'";
+                sql = sql + ",'" + url + "'";
+                sql = sql + ",'" + status + "'";
+                sql = sql + ",'" + sysadd + "'";
+                sql = sql + ",'" + username + "'";
+                sql = sql + ",'" + pubDateUnixtime + "'";
+                sql = sql + ",'" + pubDateUnixtime + "')";
+                counts = pubMyDB.executeDMLSQL(sql, ref sResult);
+                if (sResult == mySqlDB.SUCCESS && counts > 0)
+                {
+                    cmsAid = pubMyDB.LastInsertedId;
+                }
+                else
+                {
+                    Exception ex = new Exception(sResult);
+                    ex.Data.Add("错误信息", "发布文章至news表错误");
+                    _pubExceptions.Add(ex);
+                    return false;
+                }
+                //将相应的文章数据插入到news_data表中
+                string maxcharperpage = "3000";  //文章按多少字分页
+                string paginationtype = "1";           //表示文章自动分页
+                string groupids_view = "";
+                string template = "";
+                if (pageContent.Count>1)
+                {
+                    paginationtype = "2";  //表示手工分页
+                    content = "";
+                    for (int i = 0; i < pageContent.Count-1; i++)
+                    {
+                        content += pageContent[i];
+                        content += "<br /> [page] <br />";
+                    }
+
+                }
+                sql = "insert into " + _pubTablePrename + "_news_data(id,content,groupids_view,paginationtype,maxcharperpage,template,copyfrom)";
+                sql = sql + " values ('" + cmsAid.ToString() + "'";
+                sql = sql + ",'" + mySqlDB.EscapeString(content) + "'";
+                sql = sql + ",'" + groupids_view + "'";
+                sql = sql + ",'" + paginationtype + "'";
+                sql = sql + ",'" + maxcharperpage + "'";
+                sql = sql + ",'" + template + "'";
+                sql = sql + ",'" + mySqlDB.EscapeString(sourceSite) + "')";
+                counts = pubMyDB.executeDMLSQL(sql, ref sResult);
+                if (sResult == mySqlDB.SUCCESS && counts > 0)
+                {
+                }
+                else
+                {
+                    Exception ex = new Exception(sResult);
+                    ex.Data.Add("错误信息", "发布文章至news_data表错误");
+                    ex.Data.Add("发布文章ID", cmsAid);
+                    _pubExceptions.Add(ex);
+                    return false;
+                }
+                //将相应的文章数据插入到hits表中
+                string hitsid = "c-1-" + cmsAid.ToString();
+                sql = "INSERT IGNORE INTO " + _pubTablePrename + "_hits(hitsid,catid) Values('" + hitsid + "','" + _pubTypeid + "')";
+                counts = pubMyDB.executeDMLSQL(sql, ref sResult);
+                if (sResult == mySqlDB.SUCCESS && counts > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    Exception ex = new Exception(sResult);
+                    ex.Data.Add("错误信息", "发布文章-添加点击数记录至hits表错误");
+                    ex.Data.Add("发布文章ID", cmsAid);
+                    _pubExceptions.Add(ex);
+                }
             }
-            else
+
+            //如果发布CMS为phpcms
+            if (_cmsType=="akcms")
             {
-                Exception ex = new Exception(sResult);
-                ex.Data.Add("错误信息", "发布文章至news表错误");
-                _pubExceptions.Add(ex);
-                return false;
+                int pagenum = 0;
+                if (pageContent.Count>1)
+                {
+                    pagenum = pageContent.Count - 1;
+                }
+                string sql = "insert into " + _pubTablePrename + "_items(category,module,title,picture,keywords,digest,editor,dateline,lastupdate)";
+                sql = sql + " values ('" + _pubTypeid + "'";
+                sql = sql + ",'1'";
+                sql = sql + ",'" + mySqlDB.EscapeString(title) + "'";
+                sql = sql + ",'" + litpic + "'";
+                sql = sql + ",'" + mySqlDB.EscapeString(keywords) + "'";
+                sql = sql + ",'" + mySqlDB.EscapeString(description) + "'";
+                sql = sql + ",'" + username + "'";
+                sql = sql + ",'" + pubDateUnixtime + "'";
+                sql = sql + ",'" + pubDateUnixtime + "')";
+                counts = pubMyDB.executeDMLSQL(sql, ref sResult);
+                if (sResult == mySqlDB.SUCCESS && counts > 0)
+                {
+                    cmsAid = pubMyDB.LastInsertedId;
+                }
+                else
+                {
+                    Exception ex = new Exception(sResult);
+                    ex.Data.Add("错误信息", "发布文章至news表错误");
+                    _pubExceptions.Add(ex);
+                    return false;
+                }
+                //将相应的文章数据插入到news_data表中
+                if (pagenum==0)  //如果文章没分页
+                {
+                    sql = "insert into " + _pubTablePrename + "_texts(itemid,text,page)";
+                    sql = sql + " values ('" + cmsAid.ToString() + "'";
+                    sql = sql + ",'" + mySqlDB.EscapeString(content) + "'";
+                    sql = sql + "," + pagenum.ToString()+"')";
+                    counts = pubMyDB.executeDMLSQL(sql, ref sResult);
+                    if (sResult == mySqlDB.SUCCESS && counts > 0)
+                    {
+                    }
+                    else
+                    {
+                        Exception ex = new Exception(sResult);
+                        ex.Data.Add("错误信息", "发布文章至texts表错误");
+                        ex.Data.Add("发布文章ID", cmsAid);
+                        _pubExceptions.Add(ex);
+                        return false;
+                    }
+                }
+                else  //如果文章有分页
+                {
+                    int count = 0;
+                    foreach (string pageText in pageContent)
+                    {
+                        sql = "insert into " + _pubTablePrename + "_texts(itemid,text,page)";
+                        sql = sql + " values ('" + cmsAid.ToString() + "'";
+                        sql = sql + ",'" + mySqlDB.EscapeString(pageText) + "'";
+                        sql = sql + ",'" + count.ToString() + "')";
+                        counts = pubMyDB.executeDMLSQL(sql, ref sResult);
+                        if (sResult == mySqlDB.SUCCESS && counts > 0)
+                        {
+                        }
+                        else
+                        {
+                            Exception ex = new Exception(sResult);
+                            ex.Data.Add("错误信息", "发布文章至texts表错误");
+                            ex.Data.Add("发布文章ID", cmsAid);
+                            _pubExceptions.Add(ex);
+                            return false;
+                        }
+                        count++;  //分页编号+1
+                    }
+                }
             }
-            //将相应的文章数据插入到news_data表中
-            string maxcharperpage = "3000";  //文章按多少字分页
-            string paginationtype = "1";           //表示文章自动分页
-            string groupids_view = "";
-            string template = "";
-            sql = "insert into " + _pubTablePrename + "_news_data(id,content,groupids_view,paginationtype,maxcharperpage,template,copyfrom)";
-            sql = sql + " values ('" + cmsAid.ToString() + "'";
-            sql = sql + ",'" + mySqlDB.EscapeString(content) + "'";
-            sql = sql + ",'" + groupids_view + "'";
-            sql = sql + ",'" + paginationtype + "'";
-            sql = sql + ",'" + maxcharperpage + "'";
-            sql = sql + ",'" + template + "'";
-            sql = sql + ",'" + mySqlDB.EscapeString(sourceSite) + "')";
-            counts = pubMyDB.executeDMLSQL(sql, ref sResult);
-            if (sResult == mySqlDB.SUCCESS && counts > 0)
-            {
-            }
-            else
-            {
-                Exception ex = new Exception(sResult);
-                ex.Data.Add("错误信息", "发布文章至news_data表错误");
-                ex.Data.Add("发布文章ID", cmsAid);
-                _pubExceptions.Add(ex);
-                return false;
-            }
-            //将相应的文章数据插入到hits表中
-            string hitsid = "c-1-" + cmsAid.ToString();
-            sql = "INSERT IGNORE INTO " + _pubTablePrename + "_hits(hitsid,catid) Values('" + hitsid + "','" + _pubTypeid + "')";
-            counts = pubMyDB.executeDMLSQL(sql, ref sResult);
-            if (sResult==mySqlDB.SUCCESS && counts>0)
-            {
-                return true;
-            }
-            else
-            {
-                Exception ex = new Exception(sResult);
-                ex.Data.Add("错误信息", "发布文章-添加点击数记录至hits表错误");
-                ex.Data.Add("发布文章ID",cmsAid);
-                _pubExceptions.Add(ex);
-            }
+
             return true;
         }
         

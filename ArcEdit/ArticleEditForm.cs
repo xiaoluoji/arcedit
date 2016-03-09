@@ -722,7 +722,7 @@ namespace ArcEdit
                 _arcTempContent = ArcTool.ClearDiv(_arcTempContent); //发布文章前将文章内容中的div标签清除
                 if (saveArticle()) //判断是否正确保存文章
                 {
-                    ArticlePublish articlePublish = new ArticlePublish(_coConnString, _pubConnString, _pubTablePrename,aid:_aid);
+                    ArticlePublish articlePublish = new ArticlePublish(_coConnString, _pubConnString, _pubTablePrename, _cmsType, aid:_aid);
                     articlePublish.ProcessPublishArticles();  //执行发布操作
                     _arcCmsAid = articlePublish.LastExportedCmsid;
                     if (_arcCmsAid==-1)
