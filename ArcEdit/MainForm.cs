@@ -97,6 +97,7 @@ namespace ArcEdit
             tboxPubPassword.Text = _sysConfig["PubDatabase"]["Password"].StringValue;
             cboxPubCharset.Text = _sysConfig["PubDatabase"]["Charset"].StringValue;
             tboxPubTablePrename.Text = _sysConfig["PubDatabase"]["TablePrename"].StringValue;
+            cboxCmsType.Text = _sysConfig["PubDatabase"]["CmsType"].StringValue;
         }
 
         //更新sysConfig对象中的配置参数
@@ -117,6 +118,7 @@ namespace ArcEdit
             _sysConfig["PubDatabase"]["Password"].SetValue(tboxPubPassword.Text);
             _sysConfig["PubDatabase"]["Charset"].SetValue(cboxPubCharset.Text);
             _sysConfig["PubDatabase"]["TablePrename"].SetValue(tboxPubTablePrename.Text);
+            _sysConfig["PubDatabase"]["CmsType"].SetValue(cboxCmsType.Text);
         }
 
         //通过mysql配置参数生成需要建立采集数据库mysql连接的配置字符串

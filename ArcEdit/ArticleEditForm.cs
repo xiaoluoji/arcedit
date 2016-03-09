@@ -79,6 +79,7 @@ namespace ArcEdit
         private Configuration _sysConfig;                                                                                                   //sharpconfig对象
         private string _configFile;                                                                                                                //配置文件
         private string _logFile;                                                                                                                     //错误日志文件
+        private string _cmsType;                                                                                                                 //发布CMS类型
         private int _aid = 0;                                                                                                                           //文章在采集库中的ID
         private string _coConnString;                                                                                                          //采集数据库mysql连接配置参数
         private string _pubConnString;                                                                                                       //CMS数据库mysql连接配置参数
@@ -155,11 +156,13 @@ namespace ArcEdit
             {
                 tboxPubTypeid.Text = _sysConfig["Editor"]["PubTypeid"].StringValue;
                 tboxPubTypename.Text = _sysConfig["Editor"]["PubTypename"].StringValue;
+                cboxCmsType.Text = _sysConfig["PubDatabase"]["CmsType"].StringValue;
                 if (int.TryParse(tboxPubTypeid.Text,out _arcPubTypeid))
                 {
                     _arcPubTypeid = int.Parse(tboxPubTypeid.Text);
                 }
                 _arcPubTypename = tboxPubTypename.Text;
+                _cmsType = cboxCmsType.Text;
             }
         }
 
@@ -170,6 +173,7 @@ namespace ArcEdit
             {
                 _sysConfig["Editor"]["PubTypeid"].SetValue(tboxPubTypeid.Text);
                 _sysConfig["Editor"]["PubTypename"].SetValue(tboxPubTypename.Text);
+                _sysConfig["PubDatabase"]["CmsType"].SetValue(cboxCmsType.Text);
                 _sysConfig.SaveToFile(_configFile);
             }
         }
@@ -179,9 +183,9 @@ namespace ArcEdit
         //ArticleEditForm 加载事件触发
         private void ArticleEditForm_Load(object sender, EventArgs e)
         {
+            loadSysConfig();
             loadPubTypeInfo(); //加载CMS分类信息
             loadArticleContents();
-            loadSysConfig();
             webBrowserArcContent.Url = new System.Uri(_RootPath + @"kindeditor\e.html", System.UriKind.Absolute);
             webBrowserArcContent.ObjectForScripting = this;
             downloadAllpic();
@@ -196,7 +200,8 @@ namespace ArcEdit
         //ArticleEditForm 窗口关闭后
         private void ArticleEditForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            saveArticle();
+            saveSysConfig();  //保存表单配置信息，如：cms分类，发布分类名称和发布分类ID
+            saveArticle(); //保存文章至数据库
         }
 
         //当选中listViewPubTypeinfo中的分类项的时候，讲表单中CMS分类ID和CMS分类名称更新为选中的值
@@ -501,10 +506,22 @@ namespace ArcEdit
             mySqlDB myDB = new mySqlDB(_pubConnString);
             string sResult = "";
             int counts = 0;
-            string sql = "select catid,catname,items from " + _pubTablePrename + "_category where parentid <> 0 and modelid=1";
-            if (searchCondition != "")
+            string sql = "";
+            if (_cmsType=="phpcms")
             {
-                sql = sql + " and catname like '%" + searchCondition + "%'";
+                sql = "select catid,catname,items from " + _pubTablePrename + "_category where parentid <> 0 and modelid=1";
+                if (searchCondition != "")
+                {
+                    sql = sql + " and catname like '%" + searchCondition + "%'";
+                }
+            }
+            if (_cmsType=="akcms")
+            {
+                sql = "select id,category,items from " + _pubTablePrename + "_categories where module=1";
+                if (searchCondition != "")
+                {
+                    sql = sql + " and category like '%" + searchCondition + "%'";
+                }
             }
             List<Dictionary<string, object>> listPubTypeinfo = myDB.GetRecords(sql, ref sResult, ref counts);
             if (sResult == mySqlDB.SUCCESS && counts > 0)
@@ -705,7 +722,7 @@ namespace ArcEdit
                 _arcTempContent = ArcTool.ClearDiv(_arcTempContent); //发布文章前将文章内容中的div标签清除
                 if (saveArticle()) //判断是否正确保存文章
                 {
-                    ArticlePublish_Akcms articlePublish = new ArticlePublish_Akcms(_coConnString, _pubConnString, _pubTablePrename,aid:_aid);
+                    ArticlePublish articlePublish = new ArticlePublish(_coConnString, _pubConnString, _pubTablePrename,aid:_aid);
                     articlePublish.ProcessPublishArticles();  //执行发布操作
                     _arcCmsAid = articlePublish.LastExportedCmsid;
                     if (_arcCmsAid==-1)

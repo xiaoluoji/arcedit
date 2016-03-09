@@ -61,6 +61,10 @@ namespace ArcEdit
             this.lblPubTypename = new System.Windows.Forms.Label();
             this.tboxPubTypename = new System.Windows.Forms.TextBox();
             this.gboxListViewPubtype = new System.Windows.Forms.GroupBox();
+            this.listViewPubTypeinfo = new ArcDB.ListViewNF();
+            this.pub_typeid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.pub_typename = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.pub_type_items = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.gboxArcEdit = new System.Windows.Forms.GroupBox();
             this.tboxArticleLitpicURL = new System.Windows.Forms.TextBox();
             this.lblArticleLitpicURL = new System.Windows.Forms.Label();
@@ -93,10 +97,8 @@ namespace ArcEdit
             this.statusStripArceditBottom = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLblImgCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLblWordsCount = new System.Windows.Forms.ToolStripStatusLabel();
-            this.listViewPubTypeinfo = new ArcDB.ListViewNF();
-            this.pub_typeid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.pub_typename = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.pub_type_items = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lblCmsType = new System.Windows.Forms.Label();
+            this.cboxCmsType = new System.Windows.Forms.ComboBox();
             this.gboxWebBrowser.SuspendLayout();
             this.gboxArcPics.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -313,7 +315,7 @@ namespace ArcEdit
             this.imageListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imageListView.GroupHeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
             this.imageListView.Location = new System.Drawing.Point(3, 24);
-            this.imageListView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.imageListView.Margin = new System.Windows.Forms.Padding(4);
             this.imageListView.Name = "imageListView";
             this.imageListView.PersistentCacheDirectory = "";
             this.imageListView.PersistentCacheSize = ((long)(100));
@@ -407,8 +409,43 @@ namespace ArcEdit
             this.gboxListViewPubtype.TabStop = false;
             this.gboxListViewPubtype.Text = "发布分类";
             // 
+            // listViewPubTypeinfo
+            // 
+            this.listViewPubTypeinfo.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.pub_typeid,
+            this.pub_typename,
+            this.pub_type_items});
+            this.listViewPubTypeinfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewPubTypeinfo.FullRowSelect = true;
+            this.listViewPubTypeinfo.GridLines = true;
+            this.listViewPubTypeinfo.Location = new System.Drawing.Point(3, 24);
+            this.listViewPubTypeinfo.MultiSelect = false;
+            this.listViewPubTypeinfo.Name = "listViewPubTypeinfo";
+            this.listViewPubTypeinfo.Size = new System.Drawing.Size(430, 186);
+            this.listViewPubTypeinfo.TabIndex = 17;
+            this.listViewPubTypeinfo.UseCompatibleStateImageBehavior = false;
+            this.listViewPubTypeinfo.View = System.Windows.Forms.View.Details;
+            this.listViewPubTypeinfo.SelectedIndexChanged += new System.EventHandler(this.listViewPubTypeinfo_SelectedIndexChanged);
+            // 
+            // pub_typeid
+            // 
+            this.pub_typeid.Text = "发布分类ID";
+            this.pub_typeid.Width = 120;
+            // 
+            // pub_typename
+            // 
+            this.pub_typename.Text = "发布分类名称";
+            this.pub_typename.Width = 130;
+            // 
+            // pub_type_items
+            // 
+            this.pub_type_items.Text = "栏目文章数";
+            this.pub_type_items.Width = 130;
+            // 
             // gboxArcEdit
             // 
+            this.gboxArcEdit.Controls.Add(this.lblCmsType);
+            this.gboxArcEdit.Controls.Add(this.cboxCmsType);
             this.gboxArcEdit.Controls.Add(this.tboxArticleLitpicURL);
             this.gboxArcEdit.Controls.Add(this.lblArticleLitpicURL);
             this.gboxArcEdit.Controls.Add(this.tboxAticleTypename);
@@ -546,9 +583,9 @@ namespace ArcEdit
             this.gboxPageSpliter.Controls.Add(this.radioBtnAutopage);
             this.gboxPageSpliter.Controls.Add(this.radioBtnHandpage);
             this.gboxPageSpliter.Location = new System.Drawing.Point(12, 364);
-            this.gboxPageSpliter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxPageSpliter.Margin = new System.Windows.Forms.Padding(4);
             this.gboxPageSpliter.Name = "gboxPageSpliter";
-            this.gboxPageSpliter.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxPageSpliter.Padding = new System.Windows.Forms.Padding(4);
             this.gboxPageSpliter.Size = new System.Drawing.Size(414, 72);
             this.gboxPageSpliter.TabIndex = 48;
             this.gboxPageSpliter.TabStop = false;
@@ -558,7 +595,7 @@ namespace ArcEdit
             // 
             this.radioBtnOriginPage.AutoSize = true;
             this.radioBtnOriginPage.Location = new System.Drawing.Point(16, 27);
-            this.radioBtnOriginPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioBtnOriginPage.Margin = new System.Windows.Forms.Padding(4);
             this.radioBtnOriginPage.Name = "radioBtnOriginPage";
             this.radioBtnOriginPage.Size = new System.Drawing.Size(105, 22);
             this.radioBtnOriginPage.TabIndex = 2;
@@ -571,7 +608,7 @@ namespace ArcEdit
             // 
             this.radioBtnAutopage.AutoSize = true;
             this.radioBtnAutopage.Location = new System.Drawing.Point(284, 27);
-            this.radioBtnAutopage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioBtnAutopage.Margin = new System.Windows.Forms.Padding(4);
             this.radioBtnAutopage.Name = "radioBtnAutopage";
             this.radioBtnAutopage.Size = new System.Drawing.Size(105, 22);
             this.radioBtnAutopage.TabIndex = 1;
@@ -584,7 +621,7 @@ namespace ArcEdit
             // 
             this.radioBtnHandpage.AutoSize = true;
             this.radioBtnHandpage.Location = new System.Drawing.Point(150, 27);
-            this.radioBtnHandpage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioBtnHandpage.Margin = new System.Windows.Forms.Padding(4);
             this.radioBtnHandpage.Name = "radioBtnHandpage";
             this.radioBtnHandpage.Size = new System.Drawing.Size(105, 22);
             this.radioBtnHandpage.TabIndex = 0;
@@ -598,9 +635,9 @@ namespace ArcEdit
             this.gboxAutopageType.Controls.Add(this.radioBtnAutopagebyImages);
             this.gboxAutopageType.Controls.Add(this.radioBtnAutopagebyWords);
             this.gboxAutopageType.Location = new System.Drawing.Point(459, 364);
-            this.gboxAutopageType.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxAutopageType.Margin = new System.Windows.Forms.Padding(4);
             this.gboxAutopageType.Name = "gboxAutopageType";
-            this.gboxAutopageType.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxAutopageType.Padding = new System.Windows.Forms.Padding(4);
             this.gboxAutopageType.Size = new System.Drawing.Size(350, 72);
             this.gboxAutopageType.TabIndex = 49;
             this.gboxAutopageType.TabStop = false;
@@ -611,7 +648,7 @@ namespace ArcEdit
             this.radioBtnAutopagebyImages.AutoSize = true;
             this.radioBtnAutopagebyImages.Checked = true;
             this.radioBtnAutopagebyImages.Location = new System.Drawing.Point(174, 27);
-            this.radioBtnAutopagebyImages.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioBtnAutopagebyImages.Margin = new System.Windows.Forms.Padding(4);
             this.radioBtnAutopagebyImages.Name = "radioBtnAutopagebyImages";
             this.radioBtnAutopagebyImages.Size = new System.Drawing.Size(141, 22);
             this.radioBtnAutopagebyImages.TabIndex = 1;
@@ -624,7 +661,7 @@ namespace ArcEdit
             this.radioBtnAutopagebyWords.AutoSize = true;
             this.radioBtnAutopagebyWords.Enabled = false;
             this.radioBtnAutopagebyWords.Location = new System.Drawing.Point(12, 27);
-            this.radioBtnAutopagebyWords.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.radioBtnAutopagebyWords.Margin = new System.Windows.Forms.Padding(4);
             this.radioBtnAutopagebyWords.Name = "radioBtnAutopagebyWords";
             this.radioBtnAutopagebyWords.Size = new System.Drawing.Size(123, 22);
             this.radioBtnAutopagebyWords.TabIndex = 0;
@@ -636,9 +673,9 @@ namespace ArcEdit
             this.gboxParams.Controls.Add(this.tboxAutopageParams);
             this.gboxParams.Controls.Add(this.lblPageParams);
             this.gboxParams.Location = new System.Drawing.Point(12, 448);
-            this.gboxParams.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxParams.Margin = new System.Windows.Forms.Padding(4);
             this.gboxParams.Name = "gboxParams";
-            this.gboxParams.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxParams.Padding = new System.Windows.Forms.Padding(4);
             this.gboxParams.Size = new System.Drawing.Size(796, 64);
             this.gboxParams.TabIndex = 50;
             this.gboxParams.TabStop = false;
@@ -647,7 +684,7 @@ namespace ArcEdit
             // tboxAutopageParams
             // 
             this.tboxAutopageParams.Location = new System.Drawing.Point(218, 18);
-            this.tboxAutopageParams.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tboxAutopageParams.Margin = new System.Windows.Forms.Padding(4);
             this.tboxAutopageParams.Name = "tboxAutopageParams";
             this.tboxAutopageParams.Size = new System.Drawing.Size(568, 28);
             this.tboxAutopageParams.TabIndex = 1;
@@ -669,9 +706,9 @@ namespace ArcEdit
             this.gboxOtherOption.Controls.Add(this.checkBoxClearFormat);
             this.gboxOtherOption.Controls.Add(this.checkBoxOnlyImages);
             this.gboxOtherOption.Location = new System.Drawing.Point(12, 522);
-            this.gboxOtherOption.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxOtherOption.Margin = new System.Windows.Forms.Padding(4);
             this.gboxOtherOption.Name = "gboxOtherOption";
-            this.gboxOtherOption.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gboxOtherOption.Padding = new System.Windows.Forms.Padding(4);
             this.gboxOtherOption.Size = new System.Drawing.Size(796, 68);
             this.gboxOtherOption.TabIndex = 51;
             this.gboxOtherOption.TabStop = false;
@@ -680,7 +717,7 @@ namespace ArcEdit
             // btnClearPageSeparator
             // 
             this.btnClearPageSeparator.Location = new System.Drawing.Point(444, 24);
-            this.btnClearPageSeparator.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnClearPageSeparator.Margin = new System.Windows.Forms.Padding(4);
             this.btnClearPageSeparator.Name = "btnClearPageSeparator";
             this.btnClearPageSeparator.Size = new System.Drawing.Size(160, 34);
             this.btnClearPageSeparator.TabIndex = 3;
@@ -691,7 +728,7 @@ namespace ArcEdit
             // btnResetEditorContent
             // 
             this.btnResetEditorContent.Location = new System.Drawing.Point(627, 24);
-            this.btnResetEditorContent.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnResetEditorContent.Margin = new System.Windows.Forms.Padding(4);
             this.btnResetEditorContent.Name = "btnResetEditorContent";
             this.btnResetEditorContent.Size = new System.Drawing.Size(160, 34);
             this.btnResetEditorContent.TabIndex = 2;
@@ -703,7 +740,7 @@ namespace ArcEdit
             // 
             this.checkBoxClearFormat.AutoSize = true;
             this.checkBoxClearFormat.Location = new System.Drawing.Point(210, 32);
-            this.checkBoxClearFormat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.checkBoxClearFormat.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxClearFormat.Name = "checkBoxClearFormat";
             this.checkBoxClearFormat.Size = new System.Drawing.Size(106, 22);
             this.checkBoxClearFormat.TabIndex = 1;
@@ -715,7 +752,7 @@ namespace ArcEdit
             // 
             this.checkBoxOnlyImages.AutoSize = true;
             this.checkBoxOnlyImages.Location = new System.Drawing.Point(30, 30);
-            this.checkBoxOnlyImages.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.checkBoxOnlyImages.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxOnlyImages.Name = "checkBoxOnlyImages";
             this.checkBoxOnlyImages.Size = new System.Drawing.Size(124, 22);
             this.checkBoxOnlyImages.TabIndex = 0;
@@ -748,38 +785,25 @@ namespace ArcEdit
             this.toolStripStatusLblWordsCount.Size = new System.Drawing.Size(111, 24);
             this.toolStripStatusLblWordsCount.Text = "文章字数：0";
             // 
-            // listViewPubTypeinfo
+            // lblCmsType
             // 
-            this.listViewPubTypeinfo.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.pub_typeid,
-            this.pub_typename,
-            this.pub_type_items});
-            this.listViewPubTypeinfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listViewPubTypeinfo.FullRowSelect = true;
-            this.listViewPubTypeinfo.GridLines = true;
-            this.listViewPubTypeinfo.Location = new System.Drawing.Point(3, 24);
-            this.listViewPubTypeinfo.MultiSelect = false;
-            this.listViewPubTypeinfo.Name = "listViewPubTypeinfo";
-            this.listViewPubTypeinfo.Size = new System.Drawing.Size(430, 186);
-            this.listViewPubTypeinfo.TabIndex = 17;
-            this.listViewPubTypeinfo.UseCompatibleStateImageBehavior = false;
-            this.listViewPubTypeinfo.View = System.Windows.Forms.View.Details;
-            this.listViewPubTypeinfo.SelectedIndexChanged += new System.EventHandler(this.listViewPubTypeinfo_SelectedIndexChanged);
+            this.lblCmsType.AutoSize = true;
+            this.lblCmsType.Location = new System.Drawing.Point(682, 36);
+            this.lblCmsType.Name = "lblCmsType";
+            this.lblCmsType.Size = new System.Drawing.Size(116, 18);
+            this.lblCmsType.TabIndex = 45;
+            this.lblCmsType.Text = "发布CMS类型:";
             // 
-            // pub_typeid
+            // cboxCmsType
             // 
-            this.pub_typeid.Text = "发布分类ID";
-            this.pub_typeid.Width = 120;
-            // 
-            // pub_typename
-            // 
-            this.pub_typename.Text = "发布分类名称";
-            this.pub_typename.Width = 130;
-            // 
-            // pub_type_items
-            // 
-            this.pub_type_items.Text = "栏目文章数";
-            this.pub_type_items.Width = 130;
+            this.cboxCmsType.FormattingEnabled = true;
+            this.cboxCmsType.Items.AddRange(new object[] {
+            "akcms",
+            "phpcms"});
+            this.cboxCmsType.Location = new System.Drawing.Point(816, 32);
+            this.cboxCmsType.Name = "cboxCmsType";
+            this.cboxCmsType.Size = new System.Drawing.Size(136, 26);
+            this.cboxCmsType.TabIndex = 44;
             // 
             // ArticleEditForm
             // 
@@ -896,5 +920,7 @@ namespace ArcEdit
         private System.Windows.Forms.StatusStrip statusStripArceditBottom;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLblImgCount;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLblWordsCount;
+        private System.Windows.Forms.Label lblCmsType;
+        private System.Windows.Forms.ComboBox cboxCmsType;
     }
 }

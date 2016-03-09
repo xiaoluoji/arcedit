@@ -80,6 +80,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.tboxCoPassword = new System.Windows.Forms.TextBox();
             this.cboxCoCharset = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.cboxCmsType = new System.Windows.Forms.ComboBox();
             this.tabctrMainform.SuspendLayout();
             this.tabPageArcedit.SuspendLayout();
             this.gboxArcList.SuspendLayout();
@@ -306,6 +308,8 @@
             // 
             // gbxPubDatabaseSet
             // 
+            this.gbxPubDatabaseSet.Controls.Add(this.cboxCmsType);
+            this.gbxPubDatabaseSet.Controls.Add(this.label14);
             this.gbxPubDatabaseSet.Controls.Add(this.label13);
             this.gbxPubDatabaseSet.Controls.Add(this.tboxPubTablePrename);
             this.gbxPubDatabaseSet.Controls.Add(this.label5);
@@ -578,6 +582,28 @@
             this.cboxCoCharset.TabIndex = 28;
             this.cboxCoCharset.Text = "utf8";
             // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(657, 76);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(80, 18);
+            this.label14.TabIndex = 38;
+            this.label14.Text = "CMS类型:";
+            // 
+            // cboxCmsType
+            // 
+            this.cboxCmsType.FormattingEnabled = true;
+            this.cboxCmsType.Items.AddRange(new object[] {
+            "akcms",
+            "phpcms"});
+            this.cboxCmsType.Location = new System.Drawing.Point(803, 70);
+            this.cboxCmsType.Name = "cboxCmsType";
+            this.cboxCmsType.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.cboxCmsType.Size = new System.Drawing.Size(166, 26);
+            this.cboxCmsType.TabIndex = 36;
+            this.cboxCmsType.Text = "akcms";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -658,6 +684,8 @@
         private System.Windows.Forms.ColumnHeader arc_pic_counts;
         private System.Windows.Forms.ColumnHeader arc_is_edited;
         private System.Windows.Forms.CheckBox checkBoxOnlyUnedited;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.ComboBox cboxCmsType;
     }
 }
 
