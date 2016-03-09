@@ -301,7 +301,7 @@ namespace ArcEdit
                         content += pageContent[i];
                         content += "<br /> [page] <br />";
                     }
-
+                    content += pageContent[pageContent.Count - 1];
                 }
                 sql = "insert into " + _pubTablePrename + "_news_data(id,content,groupids_view,paginationtype,maxcharperpage,template,copyfrom)";
                 sql = sql + " values ('" + cmsAid.ToString() + "'";
@@ -338,6 +338,16 @@ namespace ArcEdit
                     ex.Data.Add("发布文章ID", cmsAid);
                     _pubExceptions.Add(ex);
                 }
+                //更新分类表中栏目文章数统计字段
+                sql = "update " + _pubTablePrename + "_category set items=items+1 where catid='" + _pubTypeid.ToString() + "'";
+                if (sResult != mySqlDB.SUCCESS)
+                {
+                    Exception ex = new Exception(sResult);
+                    ex.Data.Add("错误信息", "更新分类表中items字段和allitems字段错误");
+                    ex.Data.Add("发布分类ID", _pubTypeid);
+                    _pubExceptions.Add(ex);
+                }
+
             }
 
             //如果发布CMS为phpcms
@@ -348,11 +358,12 @@ namespace ArcEdit
                 {
                     pagenum = pageContent.Count - 1;
                 }
-                string sql = "insert into " + _pubTablePrename + "_items(category,module,title,picture,keywords,digest,editor,dateline,lastupdate)";
+                string sql = "insert into " + _pubTablePrename + "_items(category,module,title,picture,pagenum,keywords,digest,editor,dateline,lastupdate)";
                 sql = sql + " values ('" + _pubTypeid + "'";
                 sql = sql + ",'1'";
                 sql = sql + ",'" + mySqlDB.EscapeString(title) + "'";
                 sql = sql + ",'" + litpic + "'";
+                sql = sql + ",'" + pagenum.ToString() + "'";
                 sql = sql + ",'" + mySqlDB.EscapeString(keywords) + "'";
                 sql = sql + ",'" + mySqlDB.EscapeString(description) + "'";
                 sql = sql + ",'" + username + "'";
@@ -414,6 +425,17 @@ namespace ArcEdit
                         count++;  //分页编号+1
                     }
                 }
+                //更新栏目文章计数
+                sql = "update " + _pubTablePrename + "_categories set items=items+1,allitems=allitems+1 where id='" + _pubTypeid.ToString() + "'";
+                counts = pubMyDB.executeDMLSQL(sql, ref sResult);
+                if (sResult!=mySqlDB.SUCCESS)
+                {
+                    Exception ex = new Exception(sResult);
+                    ex.Data.Add("错误信息", "更新分类表中items字段和allitems字段错误");
+                    ex.Data.Add("发布分类ID", _pubTypeid);
+                    _pubExceptions.Add(ex);
+                }
+
             }
 
             return true;
@@ -426,6 +448,7 @@ namespace ArcEdit
             mySqlDB myDB = new mySqlDB(_coConnString);
             string sResult = "";
             int counts = 0;
+            //更新采集数据库arc_contents表中cms_aid字段
             string sql = "update arc_contents set cms_aid='" + cmsAid.ToString() + "' where aid='" + aid.ToString() + "'";
             counts = myDB.executeDMLSQL(sql, ref sResult);
             if (sResult != mySqlDB.SUCCESS || counts == 0)
@@ -436,6 +459,7 @@ namespace ArcEdit
                 ex.Data.Add("采集文章ID", aid);
                 ex.Data.Add("发布文章ID", cmsAid);
             }
+            //更新采集数据库arc_contents表中usedby_pc字段
             sql = "update arc_contents set usedby_pc='yes' where aid='" + aid.ToString() + "'";
             counts = myDB.executeDMLSQL(sql, ref sResult);
             if (sResult != mySqlDB.SUCCESS || counts == 0)
@@ -446,6 +470,18 @@ namespace ArcEdit
                 ex.Data.Add("采集文章ID", aid);
                 ex.Data.Add("发布文章ID", cmsAid);
             }
+            //更新采集数据库arc_type表中unused_nums字段
+            sql = "update arc_type set unused_nums=unused_nums-1 where tid='" + _coTypeid+ "'";
+            counts = myDB.executeDMLSQL(sql, ref sResult);
+            if (sResult != mySqlDB.SUCCESS || counts == 0)
+            {
+                isCorrectUpdated = false;
+                Exception ex = new Exception(sResult);
+                ex.Data.Add("错误信息", "发布文章后更新usedby_pc字段信息错误");
+                ex.Data.Add("采集文章ID", aid);
+                ex.Data.Add("发布文章ID", cmsAid);
+            }
+
             return isCorrectUpdated;
         }
 

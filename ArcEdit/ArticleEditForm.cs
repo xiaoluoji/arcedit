@@ -76,6 +76,7 @@ namespace ArcEdit
         private string _thumbRootPath = Application.StartupPath + @"\temp\thumb\";                          //文章缩略图保存主目录
         private string _imgRootPath = Application.StartupPath + @"\temp\img\";                                   //文章缩略图保存主目录
         private string _errorLogPath = Application.StartupPath + @"\errorLog\";                                    //错误日志目录
+        private bool _isPublished = false;                                                                                                   //文章是否发布
         private Configuration _sysConfig;                                                                                                   //sharpconfig对象
         private string _configFile;                                                                                                                //配置文件
         private string _logFile;                                                                                                                     //错误日志文件
@@ -201,7 +202,10 @@ namespace ArcEdit
         private void ArticleEditForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             saveSysConfig();  //保存表单配置信息，如：cms分类，发布分类名称和发布分类ID
-            saveArticle(); //保存文章至数据库
+            if (!_isPublished)
+            {
+                saveArticle(); //保存文章至数据库
+            }
         }
 
         //当选中listViewPubTypeinfo中的分类项的时候，讲表单中CMS分类ID和CMS分类名称更新为选中的值
@@ -732,8 +736,10 @@ namespace ArcEdit
                     }
                     else
                     {
+                        _isPublished = true;
                         btnPublishArticle.Enabled = false;  //成功发布文章后，禁用发布文章按钮，以免重复发布文章
                         MessageBox.Show("成功发布文章！文章在CMS中的ID为：" + _arcCmsAid.ToString());
+                        this.Close();
                     }
                 }
             }
