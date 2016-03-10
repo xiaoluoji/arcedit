@@ -66,6 +66,8 @@ namespace ArcEdit
             this.pub_typename = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pub_type_items = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.gboxArcEdit = new System.Windows.Forms.GroupBox();
+            this.lblCmsType = new System.Windows.Forms.Label();
+            this.cboxCmsType = new System.Windows.Forms.ComboBox();
             this.tboxArticleLitpicURL = new System.Windows.Forms.TextBox();
             this.lblArticleLitpicURL = new System.Windows.Forms.Label();
             this.tboxAticleTypename = new System.Windows.Forms.TextBox();
@@ -97,8 +99,6 @@ namespace ArcEdit
             this.statusStripArceditBottom = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLblImgCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLblWordsCount = new System.Windows.Forms.ToolStripStatusLabel();
-            this.lblCmsType = new System.Windows.Forms.Label();
-            this.cboxCmsType = new System.Windows.Forms.ComboBox();
             this.gboxWebBrowser.SuspendLayout();
             this.gboxArcPics.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -466,6 +466,26 @@ namespace ArcEdit
             this.gboxArcEdit.TabStop = false;
             this.gboxArcEdit.Text = "编辑发布文章";
             // 
+            // lblCmsType
+            // 
+            this.lblCmsType.AutoSize = true;
+            this.lblCmsType.Location = new System.Drawing.Point(682, 36);
+            this.lblCmsType.Name = "lblCmsType";
+            this.lblCmsType.Size = new System.Drawing.Size(116, 18);
+            this.lblCmsType.TabIndex = 45;
+            this.lblCmsType.Text = "发布CMS类型:";
+            // 
+            // cboxCmsType
+            // 
+            this.cboxCmsType.FormattingEnabled = true;
+            this.cboxCmsType.Items.AddRange(new object[] {
+            "akcms",
+            "phpcms"});
+            this.cboxCmsType.Location = new System.Drawing.Point(816, 32);
+            this.cboxCmsType.Name = "cboxCmsType";
+            this.cboxCmsType.Size = new System.Drawing.Size(136, 26);
+            this.cboxCmsType.TabIndex = 44;
+            // 
             // tboxArticleLitpicURL
             // 
             this.tboxArticleLitpicURL.Location = new System.Drawing.Point(116, 286);
@@ -784,26 +804,6 @@ namespace ArcEdit
             this.toolStripStatusLblWordsCount.Name = "toolStripStatusLblWordsCount";
             this.toolStripStatusLblWordsCount.Size = new System.Drawing.Size(111, 24);
             this.toolStripStatusLblWordsCount.Text = "文章字数：0";
-            // 
-            // lblCmsType
-            // 
-            this.lblCmsType.AutoSize = true;
-            this.lblCmsType.Location = new System.Drawing.Point(682, 36);
-            this.lblCmsType.Name = "lblCmsType";
-            this.lblCmsType.Size = new System.Drawing.Size(116, 18);
-            this.lblCmsType.TabIndex = 45;
-            this.lblCmsType.Text = "发布CMS类型:";
-            // 
-            // cboxCmsType
-            // 
-            this.cboxCmsType.FormattingEnabled = true;
-            this.cboxCmsType.Items.AddRange(new object[] {
-            "akcms",
-            "phpcms"});
-            this.cboxCmsType.Location = new System.Drawing.Point(816, 32);
-            this.cboxCmsType.Name = "cboxCmsType";
-            this.cboxCmsType.Size = new System.Drawing.Size(136, 26);
-            this.cboxCmsType.TabIndex = 44;
             // 
             // ArticleEditForm
             // 
