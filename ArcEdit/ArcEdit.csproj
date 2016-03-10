@@ -146,6 +146,7 @@
     <Content Include="Resources\EmptyRatingImage.png" />
     <Content Include="Resources\ErrorImage.png" />
     <EmbeddedResource Include="Resources\ImageListView.dll" />
+    <EmbeddedResource Include="Resources\HtmlAgilityPack.dll" />
     <Content Include="Resources\RatingImage.png" />
     <Content Include="Resources\SortAscending.png" />
     <Content Include="Resources\SortDescending.png" />

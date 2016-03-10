@@ -342,6 +342,7 @@ namespace ArcEdit
                 {
                     sql = sql + " and title like '%" + searchArcTitle + "%'";
                 }
+                sql = sql + " order by aid DESC";
                 if (displayCount!=0)
                 {
                     sql = sql + " limit " + displayCount.ToString();
