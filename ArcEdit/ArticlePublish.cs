@@ -387,7 +387,7 @@ namespace ArcEdit
                     sql = "insert into " + _pubTablePrename + "_texts(itemid,text,page)";
                     sql = sql + " values ('" + cmsAid.ToString() + "'";
                     sql = sql + ",'" + mySqlDB.EscapeString(content) + "'";
-                    sql = sql + "," + pagenum.ToString()+"')";
+                    sql = sql + ",'" + pagenum.ToString()+"')";
                     counts = pubMyDB.executeDMLSQL(sql, ref sResult);
                     if (sResult == mySqlDB.SUCCESS && counts > 0)
                     {
