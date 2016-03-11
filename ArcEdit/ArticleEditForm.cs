@@ -77,6 +77,7 @@ namespace ArcEdit
         private string _imgRootPath = Application.StartupPath + @"\temp\img\";                                   //文章缩略图保存主目录
         private string _errorLogPath = Application.StartupPath + @"\errorLog\";                                    //错误日志目录
         private bool _isPublished = false;                                                                                                   //文章是否发布
+        private bool _isArticleSaved = false;                                                                                              //文章是否已经编辑，保存文章过后重置为未编辑，内容改变时设置为已编辑
         private Configuration _sysConfig;                                                                                                   //sharpconfig对象
         private string _configFile;                                                                                                                //配置文件
         private string _logFile;                                                                                                                     //错误日志文件
@@ -195,6 +196,13 @@ namespace ArcEdit
         //ArticleEditForm 窗口将要关闭时
         private void ArticleEditForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (!_isArticleSaved)
+            {
+                if (MessageBox.Show("文章未执行保存操作，是否保存？", "询问", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    saveArticle(); //保存文章至数据库
+                }
+            }
 
         }
 
@@ -202,10 +210,7 @@ namespace ArcEdit
         private void ArticleEditForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             saveSysConfig();  //保存表单配置信息，如：cms分类，发布分类名称和发布分类ID
-            if (!_isPublished)
-            {
-                saveArticle(); //保存文章至数据库
-            }
+
         }
 
         //当选中listViewPubTypeinfo中的分类项的时候，讲表单中CMS分类ID和CMS分类名称更新为选中的值
@@ -703,6 +708,7 @@ namespace ArcEdit
                 MessageBox.Show("请检查表单数据，确保文章标题，缩略图URL，文章内容不能为空！");
                 return false;
             }
+            _isArticleSaved = true;
             return true;
         }
 
@@ -749,6 +755,25 @@ namespace ArcEdit
 
 
         #region 编辑器相关方法
+
+        //内容编辑时更新文章字数统计和图片数统计
+        private void updateCountInfo()
+        {
+            _arcWordsCount = _arcTempContent.Length;
+            try
+            {
+                HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(_arcTempContent);
+                HtmlAgilityPack.HtmlNodeCollection imgNodes = doc.DocumentNode.SelectNodes("//img");
+                _arcPiCount = imgNodes.Count();
+            }
+            catch (Exception)
+            {
+
+            }
+            toolStripStatusLblImgCount.Text = "文章图片数：" + _arcPiCount.ToString();
+            toolStripStatusLblWordsCount.Text = "文章字数：" + _arcWordsCount.ToString();
+        }
 
         //按字数自动分页
         private void autopageByWords(int autopageParam)
@@ -869,6 +894,7 @@ namespace ArcEdit
         public void ArcUpdateTempContent(string str)
         {
             _arcTempContent = str;
+            updateCountInfo();
             //如果内容有修改，则禁止使用原始分页方法，需要使用原始分页必须将内容重置为初始状态
             if (_arcTempContent !=_arcContent && radioBtnOriginPage.Enabled)
             {
