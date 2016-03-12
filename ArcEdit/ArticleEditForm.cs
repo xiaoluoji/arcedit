@@ -135,7 +135,15 @@ namespace ArcEdit
             InitializeComponent();
             CheckForIllegalCrossThreadCalls = false;
             StartPosition = FormStartPosition.Manual;
-            Location = new Point(ParentForm.Location.X + 350, ParentForm.Location.Y + 200);
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            int screenHeight = Screen.PrimaryScreen.Bounds.Height;
+            int currentFormWidth = this.Width;
+            int currentFormHeight = this.Height;
+            int positionX = (screenWidth - currentFormWidth) / 2;
+            int positionY = (screenHeight - currentFormHeight) / 2;
+            //Location = new Point(ParentForm.Location.X + 350, ParentForm.Location.Y + 200);
+            Location = new Point(positionX, positionY);
+
             cboxThumbSize.Enabled = false;
             cboxPicType.Enabled = false;
             string cacheDir = _RootPath + "cache";
