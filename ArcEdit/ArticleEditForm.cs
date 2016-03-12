@@ -594,7 +594,7 @@ namespace ArcEdit
                 tboxArticleTitle.Text = _arcTitle;
                 tboxArticleLitpicURL.Text = _arcLitpic;
                 tboxArticleKeywords.Text = _arcKeywords;
-                tboxArticleDescription.Text = _arcDescription;
+                tboxArticleDescription.Text = ArcTool.HtmlToTxt(_arcDescription);
                 toolStripStatusLblImgCount.Text = "文章图片数：" + _arcPiCount.ToString();
                 toolStripStatusLblWordsCount.Text = "文章字数：" + _arcWordsCount.ToString();
                 if (_arcPiCount <= 16)
