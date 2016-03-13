@@ -99,6 +99,7 @@ namespace ArcEdit
             this.statusStripArceditBottom = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLblImgCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLblWordsCount = new System.Windows.Forms.ToolStripStatusLabel();
+            this.btnDisableArticle = new System.Windows.Forms.Button();
             this.gboxWebBrowser.SuspendLayout();
             this.gboxArcPics.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -444,6 +445,7 @@ namespace ArcEdit
             // 
             // gboxArcEdit
             // 
+            this.gboxArcEdit.Controls.Add(this.btnDisableArticle);
             this.gboxArcEdit.Controls.Add(this.lblCmsType);
             this.gboxArcEdit.Controls.Add(this.cboxCmsType);
             this.gboxArcEdit.Controls.Add(this.tboxArticleLitpicURL);
@@ -805,6 +807,16 @@ namespace ArcEdit
             this.toolStripStatusLblWordsCount.Size = new System.Drawing.Size(111, 24);
             this.toolStripStatusLblWordsCount.Text = "文章字数：0";
             // 
+            // btnDisableArticle
+            // 
+            this.btnDisableArticle.Location = new System.Drawing.Point(335, 32);
+            this.btnDisableArticle.Name = "btnDisableArticle";
+            this.btnDisableArticle.Size = new System.Drawing.Size(141, 32);
+            this.btnDisableArticle.TabIndex = 46;
+            this.btnDisableArticle.Text = "禁用文章";
+            this.btnDisableArticle.UseVisualStyleBackColor = true;
+            this.btnDisableArticle.Click += new System.EventHandler(this.btnDisableArticle_Click);
+            // 
             // ArticleEditForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -922,5 +934,6 @@ namespace ArcEdit
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLblWordsCount;
         private System.Windows.Forms.Label lblCmsType;
         private System.Windows.Forms.ComboBox cboxCmsType;
+        private System.Windows.Forms.Button btnDisableArticle;
     }
 }

@@ -660,7 +660,7 @@ namespace ArcEdit
             setVarValue();
             if (validateArticle())
             {
-                string logFile = _errorLogPath + _aid.ToString() + ".txt";
+                string logFile = _errorLogPath + _aid.ToString() + ".txt"; 
                 mySqlDB myCoDB = new mySqlDB(_coConnString);
                 string sResult = "";
                 int counts = 0;
@@ -720,6 +720,27 @@ namespace ArcEdit
             return true;
         }
 
+        //禁用文章
+        private void disableArticle()
+        {
+            mySqlDB myDB = new mySqlDB(_coConnString);
+            string sResult = "";
+            int counts = 0;
+            string sql = "update arc_contents set is_display='no' where aid='" + _aid.ToString() + "'";
+            counts = myDB.executeDMLSQL(sql, ref sResult);
+            if (sResult==mySqlDB.SUCCESS && counts >0)
+            {
+                MessageBox.Show("禁用成功！");
+            }
+            else
+            {
+                MessageBox.Show("保存文章出错！请检查错误日志");
+                saveErrorLog(_logFile, sResult);
+            }
+            this.Close();
+
+        }
+
         //点击保存按钮
         private void btnSaveArticle_Click(object sender, EventArgs e)
         {
@@ -757,6 +778,17 @@ namespace ArcEdit
                     }
                 }
             }
+        }
+        //点击禁用文章
+        private void btnDisableArticle_Click(object sender, EventArgs e)
+        {
+
+            if (MessageBox.Show("禁用文章将使文章不在编辑列表中显示，是否禁用？", "询问", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                _isArticleSaved = true;
+                disableArticle();
+            }
+
         }
 
         #endregion 文章内容处理完成
@@ -1394,6 +1426,7 @@ namespace ArcEdit
                 filestream = new FileStream(savepath, FileMode.OpenOrCreate);
             }
         }
+
 
 
 

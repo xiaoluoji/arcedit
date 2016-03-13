@@ -334,6 +334,7 @@ namespace ArcEdit
                 string sResult = "";
                 int counts = 0;
                 string sql = "select aid,pic_count,is_edited,title from arc_contents where usedby_pc='no' and  type_id='" + typeID.ToString() + "'";
+                sql = sql + " and is_display='yes'";
                 if (onlyUnEdited)
                 {
                     sql = sql + " and is_edited='no'";
