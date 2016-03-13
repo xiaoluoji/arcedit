@@ -45,7 +45,8 @@ namespace ArcEdit
             @"&(copy|#169);",
             @"&#(\d+);",
             @"-->",
-            @"<!--.*\n"
+            @"<!--.*\n",
+            @"　"
             };
 
             string newReg = aryReg[0];
