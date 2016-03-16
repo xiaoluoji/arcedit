@@ -82,6 +82,7 @@ namespace ArcEdit
         private string _configFile;                                                                                                                //配置文件
         private string _logFile;                                                                                                                     //错误日志文件
         private string _cmsType;                                                                                                                 //发布CMS类型
+        private string _pageType;                                                                                                                //分页类型
         private int _aid = 0;                                                                                                                           //文章在采集库中的ID
         private string _coConnString;                                                                                                          //采集数据库mysql连接配置参数
         private string _pubConnString;                                                                                                       //CMS数据库mysql连接配置参数
@@ -167,10 +168,11 @@ namespace ArcEdit
                 tboxPubTypeid.Text = _sysConfig["Editor"]["PubTypeid"].StringValue;
                 tboxPubTypename.Text = _sysConfig["Editor"]["PubTypename"].StringValue;
                 cboxCmsType.Text = _sysConfig["PubDatabase"]["CmsType"].StringValue;
-                if (int.TryParse(tboxPubTypeid.Text,out _arcPubTypeid))
+                if (int.TryParse(tboxPubTypeid.Text, out _arcPubTypeid))
                 {
                     _arcPubTypeid = int.Parse(tboxPubTypeid.Text);
                 }
+                _pageType = _sysConfig["Editor"]["PageType"].StringValue;
                 _arcPubTypename = tboxPubTypename.Text;
                 _cmsType = cboxCmsType.Text;
             }
@@ -184,6 +186,7 @@ namespace ArcEdit
                 _sysConfig["Editor"]["PubTypeid"].SetValue(tboxPubTypeid.Text);
                 _sysConfig["Editor"]["PubTypename"].SetValue(tboxPubTypename.Text);
                 _sysConfig["PubDatabase"]["CmsType"].SetValue(cboxCmsType.Text);
+                _sysConfig["Editor"]["PageType"].SetValue(_pageType);
                 _sysConfig.SaveToFile(_configFile);
             }
         }
@@ -333,6 +336,7 @@ namespace ArcEdit
         {
             if (radioBtnOriginPage.Checked)
             {
+                _pageType = "originpage";
                 if (hasPageinfo())
                 {
                     if (MessageBox.Show("当前分页信息将清除，确定清除？", "警告！", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -350,6 +354,7 @@ namespace ArcEdit
         {
             if (radioBtnHandpage.Checked)
             {
+                _pageType = "handpage";
                 setHandPage();
             }
         }
@@ -362,10 +367,12 @@ namespace ArcEdit
             if (radioBtnAutopagebyImages.Checked)
             {
                 autopageType = "image";
+                _pageType = "autopageByImages";
             }
             if (radioBtnAutopagebyWords.Checked)
             {
                 autopageType = "words";
+                _pageType = "autopageByWords";
             }
             if (radioBtnAutopage.Checked)
             {
@@ -741,6 +748,29 @@ namespace ArcEdit
 
         }
 
+        private void publishArticle()
+        {
+            _arcTempContent = ArcTool.ClearDiv(_arcTempContent); //发布文章前将文章内容中的div标签清除
+            if (saveArticle()) //判断是否正确保存文章
+            {
+                ArticlePublish articlePublish = new ArticlePublish(_coConnString, _pubConnString, _pubTablePrename, _cmsType, aid: _aid);
+                articlePublish.ProcessPublishArticles();  //执行发布操作
+                _arcCmsAid = articlePublish.LastExportedCmsid;
+                if (_arcCmsAid == -1)
+                {
+                    string errorMessage = "文章发布失败！文章ID为" + _aid.ToString();
+                    saveErrorLog(_logFile, errorMessage);
+                }
+                else
+                {
+                    _isPublished = true;
+                    btnPublishArticle.Enabled = false;  //成功发布文章后，禁用发布文章按钮，以免重复发布文章
+                    MessageBox.Show("成功发布文章！文章在CMS中的ID为：" + _arcCmsAid.ToString());
+                    this.Close();
+                }
+            }
+        }
+
         //点击保存按钮
         private void btnSaveArticle_Click(object sender, EventArgs e)
         {
@@ -758,24 +788,16 @@ namespace ArcEdit
             }
             else
             {
-                _arcTempContent = ArcTool.ClearDiv(_arcTempContent); //发布文章前将文章内容中的div标签清除
-                if (saveArticle()) //判断是否正确保存文章
+                if (!hasPageinfo())
                 {
-                    ArticlePublish articlePublish = new ArticlePublish(_coConnString, _pubConnString, _pubTablePrename, _cmsType, aid:_aid);
-                    articlePublish.ProcessPublishArticles();  //执行发布操作
-                    _arcCmsAid = articlePublish.LastExportedCmsid;
-                    if (_arcCmsAid==-1)
+                    if (MessageBox.Show("文章没有分页，是否作为单页直接发布？", "警告！", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
-                        string errorMessage = "文章发布失败！文章ID为" + _aid.ToString();
-                        saveErrorLog(_logFile, errorMessage);
+                        publishArticle();
                     }
-                    else
-                    {
-                        _isPublished = true;
-                        btnPublishArticle.Enabled = false;  //成功发布文章后，禁用发布文章按钮，以免重复发布文章
-                        MessageBox.Show("成功发布文章！文章在CMS中的ID为：" + _arcCmsAid.ToString());
-                        this.Close();
-                    }
+                }
+                else
+                {
+                    publishArticle();
                 }
             }
         }
@@ -946,6 +968,20 @@ namespace ArcEdit
         public void ArcUpdateContent(string str)
         {
             _arcContent= str;
+            //内容编辑器第一次加载时，默认使用上一次编辑的分页模式来分页
+            switch (_pageType)
+            {
+                case "autopageByImages":
+                    radioBtnAutopagebyImages.Checked = true;
+                    radioBtnAutopage.Checked=true;
+                    break;
+                case "handpage":
+                    radioBtnHandpage.Checked=true;
+                    break;
+                case "originpage":
+                    radioBtnOriginPage.Checked = true;
+                    break;
+            }
         }
 
         //将当前_arcContent变量中的内容更新到编辑器中的内容

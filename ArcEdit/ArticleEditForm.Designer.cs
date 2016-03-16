@@ -66,6 +66,7 @@ namespace ArcEdit
             this.pub_typename = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pub_type_items = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.gboxArcEdit = new System.Windows.Forms.GroupBox();
+            this.btnDisableArticle = new System.Windows.Forms.Button();
             this.lblCmsType = new System.Windows.Forms.Label();
             this.cboxCmsType = new System.Windows.Forms.ComboBox();
             this.tboxArticleLitpicURL = new System.Windows.Forms.TextBox();
@@ -99,7 +100,6 @@ namespace ArcEdit
             this.statusStripArceditBottom = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLblImgCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLblWordsCount = new System.Windows.Forms.ToolStripStatusLabel();
-            this.btnDisableArticle = new System.Windows.Forms.Button();
             this.gboxWebBrowser.SuspendLayout();
             this.gboxArcPics.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -468,6 +468,16 @@ namespace ArcEdit
             this.gboxArcEdit.TabStop = false;
             this.gboxArcEdit.Text = "编辑发布文章";
             // 
+            // btnDisableArticle
+            // 
+            this.btnDisableArticle.Location = new System.Drawing.Point(13, 25);
+            this.btnDisableArticle.Name = "btnDisableArticle";
+            this.btnDisableArticle.Size = new System.Drawing.Size(141, 32);
+            this.btnDisableArticle.TabIndex = 46;
+            this.btnDisableArticle.Text = "禁用文章";
+            this.btnDisableArticle.UseVisualStyleBackColor = true;
+            this.btnDisableArticle.Click += new System.EventHandler(this.btnDisableArticle_Click);
+            // 
             // lblCmsType
             // 
             this.lblCmsType.AutoSize = true;
@@ -572,7 +582,7 @@ namespace ArcEdit
             // 
             // btnPublishArticle
             // 
-            this.btnPublishArticle.Location = new System.Drawing.Point(176, 32);
+            this.btnPublishArticle.Location = new System.Drawing.Point(525, 25);
             this.btnPublishArticle.Name = "btnPublishArticle";
             this.btnPublishArticle.Size = new System.Drawing.Size(141, 32);
             this.btnPublishArticle.TabIndex = 25;
@@ -582,7 +592,7 @@ namespace ArcEdit
             // 
             // btnSaveArticle
             // 
-            this.btnSaveArticle.Location = new System.Drawing.Point(16, 32);
+            this.btnSaveArticle.Location = new System.Drawing.Point(368, 25);
             this.btnSaveArticle.Name = "btnSaveArticle";
             this.btnSaveArticle.Size = new System.Drawing.Size(141, 32);
             this.btnSaveArticle.TabIndex = 24;
@@ -806,16 +816,6 @@ namespace ArcEdit
             this.toolStripStatusLblWordsCount.Name = "toolStripStatusLblWordsCount";
             this.toolStripStatusLblWordsCount.Size = new System.Drawing.Size(111, 24);
             this.toolStripStatusLblWordsCount.Text = "文章字数：0";
-            // 
-            // btnDisableArticle
-            // 
-            this.btnDisableArticle.Location = new System.Drawing.Point(335, 32);
-            this.btnDisableArticle.Name = "btnDisableArticle";
-            this.btnDisableArticle.Size = new System.Drawing.Size(141, 32);
-            this.btnDisableArticle.TabIndex = 46;
-            this.btnDisableArticle.Text = "禁用文章";
-            this.btnDisableArticle.UseVisualStyleBackColor = true;
-            this.btnDisableArticle.Click += new System.EventHandler(this.btnDisableArticle_Click);
             // 
             // ArticleEditForm
             // 
