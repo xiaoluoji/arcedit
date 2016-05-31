@@ -78,6 +78,7 @@ namespace ArcEdit
         private string _errorLogPath = Application.StartupPath + @"\errorLog\";                                    //错误日志目录
         private bool _isPublished = false;                                                                                                   //文章是否发布
         private bool _isArticleSaved = false;                                                                                              //文章是否已经编辑，保存文章过后重置为未编辑，内容改变时设置为已编辑
+        private bool _configError = false;                                                                                                  //判断程序的相关配置是否正确
         private Configuration _sysConfig;                                                                                                   //sharpconfig对象
         private string _configFile;                                                                                                                //配置文件
         private string _logFile;                                                                                                                     //错误日志文件
@@ -202,17 +203,28 @@ namespace ArcEdit
         private void ArticleEditForm_Load(object sender, EventArgs e)
         {
             loadSysConfig();
-            loadPubTypeInfo(); //加载CMS分类信息
-            loadArticleContents();
-            webBrowserArcContent.Url = new System.Uri(_RootPath + @"kindeditor\e.html", System.UriKind.Absolute);
-            webBrowserArcContent.ObjectForScripting = this;
-            downloadAllpic();
+            if (string.IsNullOrEmpty(_imgDomainPrename) || string.IsNullOrEmpty(_thumbDomainPrename))
+            {
+                MessageBox.Show("未配置图片域名前缀和缩略图域名前缀，无法正确编辑文章！请正确配置后再编辑！");
+                _configError = true;
+                this.Close();
+                //this.Dispose();
+            }
+            else
+            {
+                loadPubTypeInfo(); //加载CMS分类信息
+                loadArticleContents();
+                webBrowserArcContent.Url = new System.Uri(_RootPath + @"kindeditor\e.html", System.UriKind.Absolute);
+                webBrowserArcContent.ObjectForScripting = this;
+                downloadAllpic();
+            }
+
         }
 
         //ArticleEditForm 窗口将要关闭时
         private void ArticleEditForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!_isArticleSaved)
+            if (!_isArticleSaved && !_configError)
             {
                 if (MessageBox.Show("文章未执行保存操作，是否保存？", "询问", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
@@ -225,8 +237,10 @@ namespace ArcEdit
         //ArticleEditForm 窗口关闭后
         private void ArticleEditForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            saveSysConfig();  //保存表单配置信息，如：cms分类，发布分类名称和发布分类ID
-
+            if (!_configError)
+            {
+                saveSysConfig();  //保存表单配置信息，如：cms分类，发布分类名称和发布分类ID
+            }
         }
 
         //当选中listViewPubTypeinfo中的分类项的时候，讲表单中CMS分类ID和CMS分类名称更新为选中的值

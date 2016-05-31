@@ -242,6 +242,7 @@ namespace ArcEdit
             }
         }
 
+        //当文章列表中的某篇文章被选中的时候触发事件
         private void listViewArticles_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -257,9 +258,10 @@ namespace ArcEdit
                         {
                             ArticleEditForm editArticleForm = new ArticleEditForm(_coConnString, _pubConnString, aid, _pubTablePrename, this);
                             editArticleForm.Text = "编辑发布文章-文章ID："+aid.ToString();
-                            editArticleForm.Show();
                             this.Enabled = false;
                             editArticleForm.FormClosed += ArticleEditModify_FormClosed;
+                            editArticleForm.Show();
+
                         }
                     }
                 }
