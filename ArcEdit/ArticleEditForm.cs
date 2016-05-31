@@ -81,6 +81,8 @@ namespace ArcEdit
         private Configuration _sysConfig;                                                                                                   //sharpconfig对象
         private string _configFile;                                                                                                                //配置文件
         private string _logFile;                                                                                                                     //错误日志文件
+        private string _imgDomainPrename;                                                                                               //图片域名前缀
+        private string _thumbDomainPrename;                                                                                          //缩略图域名前缀
         private string _cmsType;                                                                                                                 //发布CMS类型
         private string _pageType;                                                                                                                //分页类型
         private int _aid = 0;                                                                                                                           //文章在采集库中的ID
@@ -175,6 +177,9 @@ namespace ArcEdit
                 _pageType = _sysConfig["Editor"]["PageType"].StringValue;
                 _arcPubTypename = tboxPubTypename.Text;
                 _cmsType = cboxCmsType.Text;
+                //读取图片和缩略图域名配置
+                _imgDomainPrename =_sysConfig["CoDatabase"]["ImgDomainPrename"].StringValue;
+                _thumbDomainPrename=_sysConfig["CoDatabase"]["ThumbDomainPrename"].StringValue;
             }
         }
 
@@ -193,7 +198,7 @@ namespace ArcEdit
 
 
         #region 控件事件触发方法
-        //ArticleEditForm 加载事件触发
+        //ArticleEditForm 加载事件触发--编辑文章的窗口打开时执行的动作
         private void ArticleEditForm_Load(object sender, EventArgs e)
         {
             loadSysConfig();
@@ -1148,6 +1153,7 @@ namespace ArcEdit
             char[] separator = { 'x', 'X' };
             string[] sizeArr = thumbSize.Split(separator);
             string width = sizeArr[0];
+            //遍历内容中的图片字典，通过每张图片的字典信息生成对应缩略图信息
             foreach (Dictionary<string, string> arcPic in _arcPicUrls)
             {
                 picCount++;
@@ -1155,7 +1161,9 @@ namespace ArcEdit
                 string localPicFilename = picCount.ToString() + arcPic["extenstion"];
                 dicPicInfo.Add("pid", arcPic["pid"]);
                 dicPicInfo.Add("pic_url", arcPic["pic_url"]);
-                string thumbUrl = arcPic["pic_url"].Replace(@"http://img", @"http://thumb");
+                //string thumbUrl = arcPic["pic_url"].Replace(@"http://img", @"http://thumb");
+                //将内容图片URL中的“图片域名前缀”替换成“缩略图域名前缀”如 yyimg 替换成 yythumb
+                string thumbUrl = arcPic["pic_url"].Replace(_imgDomainPrename, _thumbDomainPrename);
                 string thumbFilename = arcPic["short_filename"] + "." + width + arcPic["extenstion"];
                 thumbUrl = thumbUrl.Replace(arcPic["full_filename"],thumbFilename);
                 dicPicInfo.Add("thumb_url", thumbUrl);

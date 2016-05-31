@@ -89,6 +89,8 @@ namespace ArcEdit
             tboxCoPort.Text = _sysConfig["CoDatabase"]["Port"].StringValue;
             tboxCoPassword.Text = _sysConfig["CoDatabase"]["Password"].StringValue;
             cboxCoCharset.Text = _sysConfig["CoDatabase"]["Charset"].StringValue;
+            tboxImgDomainPrename.Text = _sysConfig["CoDatabase"]["ImgDomainPrename"].StringValue;
+            tboxThumbDomainPrename.Text = _sysConfig["CoDatabase"]["ThumbDomainPrename"].StringValue;
             //发布数据库
             tboxPubHostName.Text = _sysConfig["PubDatabase"]["Hostname"].StringValue;
             tboxPubUserName.Text = _sysConfig["PubDatabase"]["Username"].StringValue;
@@ -110,6 +112,8 @@ namespace ArcEdit
             _sysConfig["CoDatabase"]["Port"].SetValue(tboxCoPort.Text);
             _sysConfig["CoDatabase"]["Password"].SetValue(tboxCoPassword.Text);
             _sysConfig["CoDatabase"]["Charset"].SetValue(cboxCoCharset.Text);
+            _sysConfig["CoDatabase"]["ImgDomainPrename"].SetValue(tboxImgDomainPrename.Text);
+            _sysConfig["CoDatabase"]["ThumbDomainPrename"].SetValue(tboxThumbDomainPrename.Text);
             //发布数据库
             _sysConfig["PubDatabase"]["Hostname"].SetValue(tboxPubHostName.Text);
             _sysConfig["PubDatabase"]["Username"].SetValue(tboxPubUserName.Text);

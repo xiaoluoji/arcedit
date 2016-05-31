@@ -52,6 +52,8 @@
             this.co_type_unused_nums = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabPageSysconfig = new System.Windows.Forms.TabPage();
             this.gbxPubDatabaseSet = new System.Windows.Forms.GroupBox();
+            this.cboxCmsType = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.tboxPubTablePrename = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -80,8 +82,10 @@
             this.label4 = new System.Windows.Forms.Label();
             this.tboxCoPassword = new System.Windows.Forms.TextBox();
             this.cboxCoCharset = new System.Windows.Forms.ComboBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.cboxCmsType = new System.Windows.Forms.ComboBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.tboxImgDomainPrename = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.tboxThumbDomainPrename = new System.Windows.Forms.TextBox();
             this.tabctrMainform.SuspendLayout();
             this.tabPageArcedit.SuspendLayout();
             this.gboxArcList.SuspendLayout();
@@ -331,6 +335,28 @@
             this.gbxPubDatabaseSet.TabStop = false;
             this.gbxPubDatabaseSet.Text = "发布数据库设置(CMS数据库)";
             // 
+            // cboxCmsType
+            // 
+            this.cboxCmsType.FormattingEnabled = true;
+            this.cboxCmsType.Items.AddRange(new object[] {
+            "akcms",
+            "phpcms"});
+            this.cboxCmsType.Location = new System.Drawing.Point(803, 70);
+            this.cboxCmsType.Name = "cboxCmsType";
+            this.cboxCmsType.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.cboxCmsType.Size = new System.Drawing.Size(166, 26);
+            this.cboxCmsType.TabIndex = 36;
+            this.cboxCmsType.Text = "akcms";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(657, 76);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(80, 18);
+            this.label14.TabIndex = 38;
+            this.label14.Text = "CMS类型:";
+            // 
             // label13
             // 
             this.label13.AutoSize = true;
@@ -461,6 +487,10 @@
             // 
             // gbxCoDatabaseSet
             // 
+            this.gbxCoDatabaseSet.Controls.Add(this.label16);
+            this.gbxCoDatabaseSet.Controls.Add(this.tboxThumbDomainPrename);
+            this.gbxCoDatabaseSet.Controls.Add(this.label15);
+            this.gbxCoDatabaseSet.Controls.Add(this.tboxImgDomainPrename);
             this.gbxCoDatabaseSet.Controls.Add(this.label1);
             this.gbxCoDatabaseSet.Controls.Add(this.tboxCoPort);
             this.gbxCoDatabaseSet.Controls.Add(this.tboxCoHostName);
@@ -475,7 +505,7 @@
             this.gbxCoDatabaseSet.Controls.Add(this.cboxCoCharset);
             this.gbxCoDatabaseSet.Location = new System.Drawing.Point(17, 16);
             this.gbxCoDatabaseSet.Name = "gbxCoDatabaseSet";
-            this.gbxCoDatabaseSet.Size = new System.Drawing.Size(651, 162);
+            this.gbxCoDatabaseSet.Size = new System.Drawing.Size(991, 162);
             this.gbxCoDatabaseSet.TabIndex = 38;
             this.gbxCoDatabaseSet.TabStop = false;
             this.gbxCoDatabaseSet.Text = "采集数据库设置";
@@ -582,27 +612,37 @@
             this.cboxCoCharset.TabIndex = 28;
             this.cboxCoCharset.Text = "utf8";
             // 
-            // label14
+            // label15
             // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(657, 76);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(80, 18);
-            this.label14.TabIndex = 38;
-            this.label14.Text = "CMS类型:";
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(657, 37);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(125, 18);
+            this.label15.TabIndex = 38;
+            this.label15.Text = "图片域名前缀:";
             // 
-            // cboxCmsType
+            // tboxImgDomainPrename
             // 
-            this.cboxCmsType.FormattingEnabled = true;
-            this.cboxCmsType.Items.AddRange(new object[] {
-            "akcms",
-            "phpcms"});
-            this.cboxCmsType.Location = new System.Drawing.Point(803, 70);
-            this.cboxCmsType.Name = "cboxCmsType";
-            this.cboxCmsType.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.cboxCmsType.Size = new System.Drawing.Size(166, 26);
-            this.cboxCmsType.TabIndex = 36;
-            this.cboxCmsType.Text = "akcms";
+            this.tboxImgDomainPrename.Location = new System.Drawing.Point(803, 32);
+            this.tboxImgDomainPrename.Name = "tboxImgDomainPrename";
+            this.tboxImgDomainPrename.Size = new System.Drawing.Size(166, 28);
+            this.tboxImgDomainPrename.TabIndex = 39;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(657, 73);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(143, 18);
+            this.label16.TabIndex = 40;
+            this.label16.Text = "缩略图域名前缀:";
+            // 
+            // tboxThumbDomainPrename
+            // 
+            this.tboxThumbDomainPrename.Location = new System.Drawing.Point(803, 68);
+            this.tboxThumbDomainPrename.Name = "tboxThumbDomainPrename";
+            this.tboxThumbDomainPrename.Size = new System.Drawing.Size(166, 28);
+            this.tboxThumbDomainPrename.TabIndex = 41;
             // 
             // MainForm
             // 
@@ -686,6 +726,10 @@
         private System.Windows.Forms.CheckBox checkBoxOnlyUnedited;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.ComboBox cboxCmsType;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox tboxThumbDomainPrename;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox tboxImgDomainPrename;
     }
 }
 
