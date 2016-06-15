@@ -872,13 +872,14 @@ namespace ArcEdit
                 string pageSeparator = "<hr class=\"ke - pagebreak\" style=\"page -break-after:always; \" />";
                 string newContent = doc.DocumentNode.InnerHtml ;
                 HtmlAgilityPack.HtmlNodeCollection imageNodes = doc.DocumentNode.SelectNodes("//img");
-                for (int i = 0; i < imageNodes.Count - 1; i++)
+                for (int i = 1; i < imageNodes.Count ; i++)
                 {
                     if (i%autopageParam==0)
                     {
                         HtmlAgilityPack.HtmlNode node = imageNodes[i];
                         string nodeContent = node.OuterHtml;
-                        string replacement = nodeContent + pageSeparator;
+                        //string replacement = nodeContent + pageSeparator;
+                        string replacement =  pageSeparator + nodeContent ;
                         newContent = newContent.Replace(nodeContent, replacement);
                     }
                 }
